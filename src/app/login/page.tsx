@@ -30,7 +30,7 @@ export default function LoginPage() {
 
   return (
     <Container maxWidth="xs" style={{ marginTop: '100px' }}>
-      <Typography variant="h5" align="center" gutterBottom>Dashboard Login</Typography>
+      <Typography variant="h5" align="center" gutterBottom>Contra Galleries Management</Typography>
       <TextField
         label="Username"
         variant="outlined"

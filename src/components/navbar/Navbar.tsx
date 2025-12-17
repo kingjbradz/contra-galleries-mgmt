@@ -10,7 +10,7 @@ export default function Navbar({ title }: { title: string }) {
     router.push('/login');
   };
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: "black" }} >
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           {title}

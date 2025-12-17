@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CG Dashboard",
+  title: "Contra Galleries Management",
   description: "",
 };
 

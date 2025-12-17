@@ -13,12 +13,12 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const { pageHeader } = usePageHeader();
   
-  useEffect(() => {
-    // Only redirect after loading finishes
-    if (!loading && !user) {
-      router.replace("/login");
-    }
-  }, [loading, user, router]);
+  // useEffect(() => {
+  //   // Only redirect after loading finishes
+  //   if (!loading && !user) {
+  //     router.replace("/login");
+  //   }
+  // }, [loading, user, router]);
 
   // While we are hydrating, show a small loader to avoid flicker.
   if (loading) {

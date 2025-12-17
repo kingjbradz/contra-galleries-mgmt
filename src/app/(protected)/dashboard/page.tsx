@@ -43,7 +43,12 @@ export default function DashboardPage() {
   const capitalized = (str: string) =>
     `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
 
-  const GridItem = ({
+  const GridTitle = ({ title }: { title: string }) => (
+    <Typography variant="h6"  width="100%">
+      {title}
+    </Typography>)
+
+  const GridCard = ({
     name,
     count,
   }: {
@@ -78,22 +83,44 @@ export default function DashboardPage() {
     </Grid>
   );
 
+  const GridLink = ({ name, href }: { name: string, href: string }) => (
+    <Grid>
+      <Button
+        fullWidth
+        variant="contained"
+        color="primary"
+        onClick={() => window.open(href, "_blank")}
+      >
+        {name}
+      </Button>
+    </Grid>
+  );
+
   return (
     <>
       <Typography variant="h4" gutterBottom>
-        Welcome, {capitalized(user.username)} ({user.role})
+        Logged In As: {capitalized(user.username)} ({user.role})
       </Typography>
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <GridItem name="Artists" count={stats.artists} />
-        <GridItem name="Artworks" count={stats.artworks} />
-        <GridItem name="Exhibitions" count={stats.exhibitions} />
+        <GridTitle title="Stats" />
+        <GridCard name="Artists" count={stats.artists} />
+        <GridCard name="Artworks" count={stats.artworks} />
+        <GridCard name="Exhibitions" count={stats.exhibitions} />
       </Grid>
 
       <Grid container spacing={2}>
+        <GridTitle title="Manage" />
         <GridButton name="artists" />
         <GridButton name="artworks" />
         <GridButton name="exhibitions" />
+      </Grid>
+
+      <Grid container spacing={2} marginTop={1}>
+        <GridTitle title="Quick Links" />
+        <GridLink name="Main Website" href="https://contragalleries.com" />
+        <GridLink name="Private Website" href="https://private.contragalleries.com" />
+        <GridLink name="QR/Onsite" href="https://onsite.contragalleries.com" />
       </Grid>
     </>
   );
