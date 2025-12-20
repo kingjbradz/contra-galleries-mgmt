@@ -1,5 +1,6 @@
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { AppBar, Toolbar, Typography, Button, IconButton } from "@mui/material";
+import HomeIcon from '@mui/icons-material/Home';
 
 export default function Navbar({ title }: { title: string }) {
   const router = useRouter();
@@ -11,10 +12,17 @@ export default function Navbar({ title }: { title: string }) {
   };
   return (
     <AppBar position="static" sx={{ backgroundColor: "black" }} >
-      <Toolbar>
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
-          {title}
-        </Typography>
+      <Toolbar sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+        <IconButton aria-label="home" color="inherit" onClick={() => router.push('/')}>
+          <HomeIcon />
+        </IconButton>
+          <Typography variant="h5">
+            {title}
+          </Typography>
         <Button color="inherit" onClick={handleLogout}>
           Logout
         </Button>

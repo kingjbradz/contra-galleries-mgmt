@@ -76,7 +76,7 @@ export default function DashboardPage() {
         fullWidth
         variant="contained"
         color="primary"
-        onClick={() => router.push(`/dashboard/${name}`)}
+        onClick={() => router.push(`/${name}`)}
       >
         Manage {name}
       </Button>
