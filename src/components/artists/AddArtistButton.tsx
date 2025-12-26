@@ -1,27 +1,23 @@
 import { useState } from 'react';
 import { Button } from '@mui/material';
-import AddArtistDialog from './AddArtistDialog';
+import Modal from '../ui/Modal';
+import ArtistForm from './ArtistForm';
 
 export default function AddArtistButton() {
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (value: string) => {
-    setOpen(false);
-  };
-
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={() => setOpen(true)}>
         Add Artist
       </Button>
-      <AddArtistDialog
+      <Modal
         open={open}
-        onClose={handleClose}
-      />
+        onClose={() => setOpen(false)}
+        title="Add Artist"
+      >
+        <ArtistForm onSuccess={() => setOpen(false)} />
+      </Modal>
     </div>
   );
 }
