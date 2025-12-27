@@ -62,7 +62,7 @@ export default function ArtistForm({ onSuccess }: Props) {
         <Button
           type="submit"
           variant="contained"
-          disabled={submitting}
+          loading={submitting}
         >
           Create Artist
         </Button>

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/PageHeaderContext";
@@ -18,31 +18,47 @@ export default function ArtistsPage() {
   const { user, loading } = useAuth();
   const { setPageHeader } = usePageHeader();
 
+  const loadArtists = useCallback(async () => {
+    setLoadingArtists(true);
+    const res = await fetch("/api/artists");
+    const data = await res.json();
+    setArtists(data.artists);
+    setLoadingArtists(false);
+  }, []);
+  
+
   useEffect(() => {
     setPageHeader({ title: "Artists" });
 
-    async function loadArtists() {
-      try {
-        const res = await fetch("/api/artists");
-        if (!res.ok) throw new Error("Failed to fetch artists");
+    // async function loadArtists() {
+    //   try {
+    //     const res = await fetch("/api/artists");
+    //     if (!res.ok) throw new Error("Failed to fetch artists");
   
-        const data = await res.json();
-        setArtists(data.artists);
-      } catch (err) {
-        console.error("Failed to load artists", err);
-      } finally {
-        setLoadingArtists(false);
-      }
-    }
+    //     const data = await res.json();
+    //     setArtists(data.artists);
+    //   } catch (err) {
+    //     console.error("Failed to load artists", err);
+    //   } finally {
+    //     setLoadingArtists(false);
+    //   }
+    // }
 
-    loadArtists()
+    // loadArtists()
   }, []);
+
+  useEffect(() => {
+    loadArtists();
+  }, [loadArtists]);
 
   if (loading || loadingArtists) return <CircularProgress />;
   if (!user) return <CircularProgress />; // fallback, AuthProvider handles redirect
   return (
       <Grid container spacing={3} padding={2}>
-        <AddArtistButton />
+        <Grid size={{ xs: 12 }}>
+
+          <AddArtistButton onArtistCreated={loadArtists}/>
+        </Grid>
         {artists.map((artist) => (
           <Grid
             key={artist.id}

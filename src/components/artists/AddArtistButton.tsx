@@ -3,7 +3,11 @@ import { Button } from '@mui/material';
 import Modal from '../ui/Modal';
 import ArtistForm from './ArtistForm';
 
-export default function AddArtistButton() {
+export default function AddArtistButton({
+  onArtistCreated,
+}: {
+  onArtistCreated: () => void;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,7 +20,10 @@ export default function AddArtistButton() {
         onClose={() => setOpen(false)}
         title="Add Artist"
       >
-        <ArtistForm onSuccess={() => setOpen(false)} />
+        <ArtistForm onSuccess={() => {
+          setOpen(false)
+          onArtistCreated()
+          }} />
       </Modal>
     </div>
   );
