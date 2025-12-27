@@ -29,22 +29,6 @@ export default function ArtistsPage() {
 
   useEffect(() => {
     setPageHeader({ title: "Artists" });
-
-    // async function loadArtists() {
-    //   try {
-    //     const res = await fetch("/api/artists");
-    //     if (!res.ok) throw new Error("Failed to fetch artists");
-  
-    //     const data = await res.json();
-    //     setArtists(data.artists);
-    //   } catch (err) {
-    //     console.error("Failed to load artists", err);
-    //   } finally {
-    //     setLoadingArtists(false);
-    //   }
-    // }
-
-    // loadArtists()
   }, []);
 
   useEffect(() => {
@@ -69,8 +53,8 @@ export default function ArtistsPage() {
                 <Typography variant="h6">
                   {artist.name}
                 </Typography>
-                <Button onClick={() => router.push(`/artist/${artist.id}`)}>View Artist</Button>
-                <Button onClick={() => router.push(`/artist/${artist.id}`)}>Edit Artist</Button>
+                <Button onClick={() => router.push(`/artists/${artist.id}`)}>View Artist</Button>
+                <Button onClick={() => router.push(`/artists/${artist.id}`)}>Edit Artist</Button>
               </CardContent>
             </Card>
           </Grid>
