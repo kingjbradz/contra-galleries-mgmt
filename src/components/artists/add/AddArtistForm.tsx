@@ -7,7 +7,7 @@ type Props = {
   onSuccess?: () => void;
 };
 
-export default function ArtistForm({ onSuccess }: Props) {
+export default function AddArtistForm({ onSuccess }: Props) {
   const [artist, setArtist] = useState({
     name: "",
     bio: ""

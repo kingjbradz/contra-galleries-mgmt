@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/PageHeaderContext";
 import { Card, CardContent, CircularProgress, Button, Grid, Typography } from "@mui/material";
-import AddArtistButton from "@/components/artists/AddArtistButton";
+import AddArtistButton from "@/components/artists/add/AddArtistButton";
 
 interface Artists {
   id: string;

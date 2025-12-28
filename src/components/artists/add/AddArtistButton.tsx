@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@mui/material';
-import Modal from '../ui/Modal';
-import ArtistForm from './ArtistForm';
+import Modal from '../../ui/Modal';
+import AddArtistForm from './AddArtistForm';
 
 export default function AddArtistButton({
   onArtistCreated,
@@ -20,7 +20,7 @@ export default function AddArtistButton({
         onClose={() => setOpen(false)}
         title="Add Artist"
       >
-        <ArtistForm onSuccess={() => {
+        <AddArtistForm onSuccess={() => {
           setOpen(false)
           onArtistCreated()
           }} />
