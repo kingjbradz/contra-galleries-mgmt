@@ -5,15 +5,17 @@ import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/PageHeaderContext";
 import { Card, CardContent, CircularProgress, Button, Grid, Typography } from "@mui/material";
 import AddArtistButton from "@/components/artists/add/AddArtistButton";
+import EditArtistButton from "@/components/artists/edit/EditArtistButton";
 
-interface Artists {
-  id: string;
+export interface Artist {
+  id?: string;
   name: string;
+  bio?: string
 }
 
 export default function ArtistsPage() {
   const router = useRouter();
-  const [artists, setArtists] = useState<Artists[]>([])
+  const [artists, setArtists] = useState<Artist[]>([])
   const [loadingArtists, setLoadingArtists] = useState(true);
   const { user, loading } = useAuth();
   const { setPageHeader } = usePageHeader();
@@ -54,7 +56,7 @@ export default function ArtistsPage() {
                   {artist.name}
                 </Typography>
                 <Button onClick={() => router.push(`/artists/${artist.id}`)}>View Artist</Button>
-                <Button onClick={() => router.push(`/artists/${artist.id}`)}>Edit Artist</Button>
+                <EditArtistButton artist={artist} onArtistEdited={loadArtists}/>
               </CardContent>
             </Card>
           </Grid>
