@@ -43,10 +43,9 @@ export default function ArtistsPage() {
   return (
       <Grid container spacing={3} padding={2}>
         <Grid size={{ xs: 12 }}>
-
           <AddArtistButton onArtistCreated={loadArtists}/>
         </Grid>
-        {artists.map((artist) => (
+        {artists ? artists.map((artist) => (
           <Grid
             key={artist.id}
             size={{ xs: 12, sm: 6, md: 4 }}
@@ -61,7 +60,7 @@ export default function ArtistsPage() {
               </CardContent>
             </Card>
           </Grid>
-        ))}
+        )) : <Typography variant="h4" width="100%" textAlign="center">Could not load artists</Typography>}
       </Grid>   
   );
 }
