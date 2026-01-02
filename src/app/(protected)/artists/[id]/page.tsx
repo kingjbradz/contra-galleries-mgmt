@@ -1,7 +1,6 @@
 import { Artist } from "../page";
 import { Accordion, AccordionSummary, AccordionDetails, CircularProgress, Grid, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { usePageHeader } from "@/context/PageHeaderContext";
 
 export default async function ArtistPage({
   params,
@@ -9,7 +8,6 @@ export default async function ArtistPage({
   params: Promise<Artist>;
 }) {
   const { id } = await params;
-  const setPageHeader = usePageHeader();
 
   // Fetch data directly on the server
   const res = await fetch(
@@ -20,9 +18,7 @@ export default async function ArtistPage({
   );
 
   const artist: Artist = await res.json();
-  // const artist = JSON.stringify(artistData)
-
-
+  
   return (
     <Grid container spacing={3} padding={2}>
       {artist.error ? (
