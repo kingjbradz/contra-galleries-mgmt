@@ -11,6 +11,7 @@ export interface Artist {
   id?: string;
   name: string;
   bio?: string
+  error?: string;
 }
 
 export default function ArtistsPage() {
