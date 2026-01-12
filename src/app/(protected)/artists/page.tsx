@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { usePageHeader } from "@/context/PageHeaderContext";
+import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import { Card, CardContent, CircularProgress, Button, Grid, Typography } from "@mui/material";
 import AddArtistButton from "@/components/artists/add/AddArtistButton";
 import EditArtistButton from "@/components/artists/edit/EditArtistButton";

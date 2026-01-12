@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { usePageHeader } from "@/context/PageHeaderContext";
+import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import { CircularProgress } from "@mui/material";
 
 export default function ExhibitionsPage() {

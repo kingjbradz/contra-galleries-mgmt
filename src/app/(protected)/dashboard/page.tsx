@@ -10,7 +10,7 @@ import {
   CardContent,
   Button,
 } from "@mui/material";
-import { usePageHeader } from "@/context/PageHeaderContext";
+import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 
 export default function DashboardPage() {
   const router = useRouter();

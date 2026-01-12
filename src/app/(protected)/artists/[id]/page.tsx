@@ -1,6 +1,7 @@
 import { Artist } from "../page";
 import { Accordion, AccordionSummary, AccordionDetails, CircularProgress, Grid, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
 
 export default async function ArtistPage({
   params,
@@ -27,9 +28,7 @@ export default async function ArtistPage({
         </Typography>
       ) : (
         <>
-          <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
-            <Typography variant="h4" gutterBottom>{artist.name}</Typography>
-          </Grid>
+            <PageHeaderSetter title={artist.name} />
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
           <Accordion>
         <AccordionSummary

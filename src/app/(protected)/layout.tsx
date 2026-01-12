@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Navbar from "@/components/navbar/Navbar";
-import { usePageHeader } from "@/context/PageHeaderContext";
+import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
