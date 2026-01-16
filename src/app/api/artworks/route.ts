@@ -19,10 +19,7 @@ export async function GET() {
     return NextResponse.json({ artworks: data });
   } catch (err) {
     console.error("GET /api/artworks exception:", err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
@@ -30,14 +27,20 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { name, 
-      // info = null, 
-      // bio = null 
+    const {
+      artist_id = null,
+      title = null,
+      year = null,
+      material = null,
+      dimensions = null,
+      info = null,
+      price = null,
+      signed = null,
     } = body;
 
-    if (!name || typeof name !== "string") {
+    if (!title || typeof title !== "string") {
       return NextResponse.json(
-        { error: "Artworks name is required" },
+        { error: "Artworks title is required" },
         { status: 400 }
       );
     }
@@ -46,7 +49,14 @@ export async function POST(req: Request) {
       .from("artworks")
       .insert([
         {
-          name,
+          artist_id,
+          title,
+          year,
+          material,
+          dimensions,
+          info,
+          price,
+          signed,
         },
       ])
       .select()

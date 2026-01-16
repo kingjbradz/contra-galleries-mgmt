@@ -42,9 +42,6 @@ export default function EditArtistForm({ artist, onSuccess }: Props) {
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={2}>
-        <pre>
-          {JSON.stringify(editedArtist)}
-        </pre>
         <TextField
           label="Name"
           value={editedArtist.name || ""}

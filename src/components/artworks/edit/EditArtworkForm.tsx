@@ -1,42 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Alert,
-  FormControlLabel,
-  Checkbox,
-  TextField,
-  Button,
-  Stack,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import { Alert, Checkbox, Select, MenuItem, FormControlLabel, TextField, Button, Stack } from "@mui/material";
+import { Artwork } from "@/app/(protected)/artworks/page";
+import { Artist } from "../add/AddArtworkForm";
 import { supabase } from "@/lib/supabaseClient";
 
-export interface Artist {
-  id: string;
-  name: string;
-}
 
 type Props = {
+  artwork: Artwork;
   onSuccess?: () => void;
 };
 
-export default function AddArtworkForm({ onSuccess }: Props) {
+export default function EditArtworkForm({ artwork, onSuccess }: Props) {
   const [artists, setArtists] = useState<Artist[]>([]);
-  // const [artistId, setArtistId] = useState("");
-  const [artwork, setArtwork] = useState({
-    artist_id: "",
-    title: "",
-    year: "",
-    material: "",
-    dimensions: "",
-    info: "",
-    price: "",
-    signed: false,
-    error: "",
+  const [editedArtwork, setEditedArtwork] = useState<Artwork>({
+    artist_id: artwork.artist_id,
+    title: artwork.title,
+    year: artwork.year,
+    material: artwork.material,
+    dimensions: artwork.dimensions,
+    info: artwork.info,
+    price: artwork.price,
+    signed: artwork.signed,
   });
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(false)
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -57,17 +45,18 @@ export default function AddArtworkForm({ onSuccess }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
+    console.log()
 
-    const res = await fetch("/api/artworks", {
-      method: "POST",
+    const res = await fetch(`/api/artworks/${artwork.id}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(artwork),
+      body: JSON.stringify(editedArtwork),
     });
 
     setSubmitting(false);
 
     if (!res.ok) {
-      setError(true);
+      setError(true)
       return;
     }
 
@@ -78,9 +67,9 @@ export default function AddArtworkForm({ onSuccess }: Props) {
     <form onSubmit={handleSubmit}>
       <Stack spacing={2}>
         <Select
-          value={artwork.artist_id}
+          value={editedArtwork.artist_id || ""}
           label="Artist"
-          onChange={(e) => setArtwork({
+          onChange={(e) => setEditedArtwork({
             ...artwork,
             artist_id: e.target.value
           })}
@@ -92,10 +81,10 @@ export default function AddArtworkForm({ onSuccess }: Props) {
         </Select>
         <TextField
           label="Title"
-          value={artwork.title}
+          value={editedArtwork.title || ""}
           required
           onChange={(e) =>
-            setArtwork({
+            setEditedArtwork({
               ...artwork,
               title: e.target.value,
             })
@@ -103,10 +92,10 @@ export default function AddArtworkForm({ onSuccess }: Props) {
         />
         <TextField
           label="Year"
-          value={artwork.year}
+          value={editedArtwork.year || ""}
           required
           onChange={(e) =>
-            setArtwork({
+            setEditedArtwork({
               ...artwork,
               year: e.target.value,
             })
@@ -114,10 +103,10 @@ export default function AddArtworkForm({ onSuccess }: Props) {
         />
         <TextField
           label="Material"
-          value={artwork.material}
+          value={editedArtwork.material || ""}
           required
           onChange={(e) =>
-            setArtwork({
+            setEditedArtwork({
               ...artwork,
               material: e.target.value,
             })
@@ -125,10 +114,10 @@ export default function AddArtworkForm({ onSuccess }: Props) {
         />
         <TextField
           label="Dimensions"
-          value={artwork.dimensions}
+          value={editedArtwork.dimensions || ""}
           required
           onChange={(e) =>
-            setArtwork({
+            setEditedArtwork({
               ...artwork,
               dimensions: e.target.value,
             })
@@ -136,11 +125,11 @@ export default function AddArtworkForm({ onSuccess }: Props) {
         />
         <TextField
           label="Info"
-          value={artwork.info}
+          value={editedArtwork.info || ""}
           multiline
           rows={3}
           onChange={(e) =>
-            setArtwork({
+            setEditedArtwork({
               ...artwork,
               info: e.target.value,
             })
@@ -148,10 +137,10 @@ export default function AddArtworkForm({ onSuccess }: Props) {
         />
         <TextField
           label="Price"
-          value={artwork.price}
+          value={editedArtwork.price || ""}
           required
           onChange={(e) =>
-            setArtwork({
+            setEditedArtwork({
               ...artwork,
               price: e.target.value,
             })
@@ -160,9 +149,9 @@ export default function AddArtworkForm({ onSuccess }: Props) {
         <FormControlLabel
           control={
             <Checkbox
-              value={artwork.signed}
+              value={editedArtwork.signed || false}
               onChange={(e) =>
-                setArtwork({
+                setEditedArtwork({
                   ...artwork,
                   signed: e.target.checked,
                 })
@@ -172,7 +161,7 @@ export default function AddArtworkForm({ onSuccess }: Props) {
           label="Signed?"
         />
         <Button type="submit" variant="contained" loading={submitting}>
-          Create Artwork
+          Edit Artwork
         </Button>
         {error && <Alert severity="error">There is something wrong.</Alert>}
       </Stack>
