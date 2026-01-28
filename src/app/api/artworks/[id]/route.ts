@@ -8,10 +8,7 @@ type Params = {
 // Helper to get params (required for Next.js 15)
 type RouteParams = Promise<{ id: string }>;
 
-export async function GET(
-  req: Request,
-  { params }: { params: RouteParams }
-) {
+export async function GET(req: Request, { params }: { params: RouteParams }) {
   try {
     const { id } = await params;
 
@@ -22,19 +19,13 @@ export async function GET(
       .single();
 
     if (error || !data) {
-      return NextResponse.json(
-        { error: "Artwork not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Artwork not found" }, { status: 404 });
     }
 
     return NextResponse.json(data);
   } catch (err) {
     console.error("GET /artworks/[id] error:", err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
@@ -46,10 +37,27 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
-    const updateData: { name?: string; bio?: string } = {};
+    const updateData: {
+      artist_id?: string;
+      title?: string;
+      year?: string;
+      material?: string;
+      dimensions?: string;
+      info?: string;
+      price?: string;
+      signed?: boolean;
+    } = {};
 
-    if (body.name !== undefined) updateData.name = body.name;
-    if (body.bio !== undefined) updateData.bio = body.bio;
+    if (body.artist_id !== undefined) updateData.artist_id = body.artist_id;
+    if (body.title !== undefined) updateData.title = body.title;
+    if (body.year !== undefined) updateData.year = body.year;
+    if (body.material !== undefined) updateData.material = body.material;
+    if (body.dimensions !== undefined) updateData.dimensions = body.dimensions;
+    if (body.info !== undefined) updateData.info = body.info;
+    if (body.price !== undefined) updateData.price = body.price;
+    if (body.signed !== undefined) updateData.signed = body.signed;
+
+    console.log("artworks keys", Object.keys(updateData))
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
@@ -66,31 +74,21 @@ export async function PUT(
       .single();
 
     if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
     return NextResponse.json({ artist: data });
   } catch (err) {
     console.error("PUT /artworks error:", err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
-
 
 export async function DELETE(_: Request, { params }: Params) {
   const artworkId = params.id;
 
   if (!artworkId) {
-    return NextResponse.json(
-      { error: "Artwork ID required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Artwork ID required" }, { status: 400 });
   }
 
   /* 1️⃣ Check artworks */
@@ -105,7 +103,6 @@ export async function DELETE(_: Request, { params }: Params) {
       { status: 500 }
     );
   }
-
 
   /* 3️⃣ Safe to delete */
   const { error: deleteError } = await supabaseAdmin

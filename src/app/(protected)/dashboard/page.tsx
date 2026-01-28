@@ -25,12 +25,13 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function loadStats() {
-      // TODO — replace these with real DB/API calls soon
-      setStats({
-        artists: 12,
-        artworks: 45,
-        exhibitions: 3,
-      });
+      const res = await fetch("/api/stats");  
+      if (!res.ok) {
+        console.error("GET /api/stats error:", res.statusText);
+        return;
+      }
+      const data = await res.json();
+      setStats(data);
     }
 
     loadStats();
@@ -101,7 +102,6 @@ export default function DashboardPage() {
       <Typography variant="h4" gutterBottom>
         Logged In As: {capitalized(user.username)} ({user.role})
       </Typography>
-
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <GridTitle title="Stats" />
         <GridCard name="Artists" count={stats.artists} />
