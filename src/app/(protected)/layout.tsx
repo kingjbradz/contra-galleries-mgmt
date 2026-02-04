@@ -21,7 +21,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   // }, [loading, user, router]);
 
   // While we are hydrating, show a small loader to avoid flicker.
-  if (loading) {
+  if (loading || !user) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
         <CircularProgress />
@@ -30,10 +30,10 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   }
 
   // If not loading and there's no user, effect above will redirect.
-  if (!user) {
-    // Return null to avoid rendering protected UI briefly while redirect happens.
-    return null;
-  }
+  // if (!user) {
+  //   // Return null to avoid rendering protected UI briefly while redirect happens.
+  //   return null;
+  // }
 
   return (
     <>
