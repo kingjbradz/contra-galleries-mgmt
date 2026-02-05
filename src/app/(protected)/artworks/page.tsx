@@ -6,7 +6,6 @@ import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import {
   Card,
   CardContent,
-  CircularProgress,
   Button,
   Grid,
   Typography,
@@ -14,6 +13,7 @@ import {
 import ModalButton from "@/components/ui/ModalButton";
 import AddArtworkForm from "@/components/artworks/add/AddArtworkForm";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
+import Progress from "@/components/ui/Progress";
 
 export interface Artwork {
   id?: string;
@@ -51,8 +51,8 @@ export default function ArtistsPage() {
     loadArtworks();
   }, [loadArtworks]);
 
-  if (loading || loadingArtworks) return <CircularProgress />;
-  if (!user) return <CircularProgress />; // fallback, AuthProvider handles redirect
+  if (loading || loadingArtworks) return <Progress />;
+  if (!user) return <Progress />; // fallback, AuthProvider handles redirect
   return (
     <Grid container spacing={3} padding={2}>
       <Grid size={{ xs: 12 }}>

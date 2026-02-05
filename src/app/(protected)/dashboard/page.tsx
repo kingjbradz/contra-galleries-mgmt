@@ -6,11 +6,11 @@ import {
   Typography,
   Grid,
   Card,
-  CircularProgress,
   CardContent,
   Button,
 } from "@mui/material";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
+import Progress from "@/components/ui/Progress";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -38,8 +38,8 @@ export default function DashboardPage() {
     setPageHeader({ title: "Dashboard" });
   }, []);
 
-  if (loading) return <CircularProgress />;
-  if (!user) return <CircularProgress />; // fallback, AuthProvider handles redirect
+  if (loading) return <Progress />;
+  if (!user) return <Progress />; // fallback, AuthProvider handles redirect
 
   const capitalized = (str: string) =>
     `${str.charAt(0).toUpperCase()}${str.slice(1)}`;

@@ -1,6 +1,5 @@
 import { Artwork } from "../page";
-import { Accordion, AccordionSummary, AccordionDetails, CircularProgress, Grid, Typography } from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Grid, Typography } from "@mui/material";
 import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
 
 export default async function ArtworkPage({

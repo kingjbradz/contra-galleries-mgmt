@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import CircularProgress from "@mui/material/CircularProgress";
+import Progress from "@/components/ui/Progress";
 import Box from "@mui/material/Box";
 import Navbar from "@/components/navbar/Navbar";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
@@ -23,9 +23,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   // While we are hydrating, show a small loader to avoid flicker.
   if (loading || !user) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
-        <CircularProgress />
-      </Box>
+      <Progress />
     );
   }
 
