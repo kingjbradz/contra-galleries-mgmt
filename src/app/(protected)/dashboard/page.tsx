@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   Button,
+  Skeleton
 } from "@mui/material";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import Progress from "@/components/ui/Progress";
@@ -16,7 +17,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const { setPageHeader } = usePageHeader();
-
+  const [loadingStatus, setLoadingStatus] = useState(true)
   const [stats, setStats] = useState({
     artists: 0,
     artworks: 0,
@@ -32,6 +33,7 @@ export default function DashboardPage() {
       }
       const data = await res.json();
       setStats(data);
+      setLoadingStatus(false)
     }
 
     loadStats();
@@ -65,7 +67,7 @@ export default function DashboardPage() {
       <Card>
         <CardContent>
           <Typography variant="h6">{name}</Typography>
-          <Typography variant="h4">{count}</Typography>
+          <Typography variant="h4">{loadingStatus ? <Skeleton /> : count}</Typography>
         </CardContent>
       </Card>
     </Grid>
