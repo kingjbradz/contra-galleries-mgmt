@@ -10,9 +10,11 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false)
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitting(true)
     setError('');
 
     const res = await fetch('/api/login', {
@@ -25,6 +27,7 @@ export default function LoginPage() {
 
     if (!res.ok) {
       setError(data.error || 'Login failed');
+      setSubmitting(false)
     } else {
       localStorage.setItem('user', JSON.stringify(data)); // simple session
       setUser(data.user);
@@ -59,7 +62,7 @@ export default function LoginPage() {
           color="primary"
           fullWidth
           style={{ marginTop: '16px' }}
-          // onClick={handleLogin}
+          loading={submitting}
           type="submit"
         >
           Login

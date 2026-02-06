@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppBar, Toolbar, Typography, Button, IconButton } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, IconButton, CircularProgress } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 
 export default function Navbar({ title }: { title: string }) {
   const router = useRouter();
+  const [submitting, setSubmitting] = useState(false)
 
   const handleLogout = async () => {
+    setSubmitting(true)
     await fetch('/api/logout', { method: 'POST' });
     localStorage.removeItem('user');
     router.push('/login');
@@ -17,14 +20,14 @@ export default function Navbar({ title }: { title: string }) {
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-        <IconButton aria-label="home" color="inherit" onClick={() => router.push('/')}>
+        <IconButton aria-label="home" color="inherit" onClick={() => router.push('/dashboard')}>
           <HomeIcon />
         </IconButton>
           <Typography variant="h5">
             {title}
           </Typography>
-        <Button color="inherit" onClick={handleLogout}>
-          Logout
+        <Button color="inherit" onClick={handleLogout} loading={submitting}>
+          {submitting ? <CircularProgress sx={{ color: 'white' }} /> : "Logout"}
         </Button>
       </Toolbar>
     </AppBar>
