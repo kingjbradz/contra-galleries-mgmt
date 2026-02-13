@@ -1,7 +1,6 @@
-import { Box, CircularProgress, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 export default function Progress() {
-  const isMobile = useMediaQuery("(max-width: 600px)");
   return (
     <Box
       sx={{
@@ -9,7 +8,10 @@ export default function Progress() {
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
-        height: `calc(100vh - ${isMobile ? "56px" : "64px"})`,
+        height: {
+            xs: "calc(100vh - 56px)",
+            sm: "calc(100vh - 64px)"
+          }
       }}
     >
       <CircularProgress />

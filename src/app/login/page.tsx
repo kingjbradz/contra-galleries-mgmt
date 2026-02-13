@@ -23,14 +23,14 @@ export default function LoginPage() {
       body: JSON.stringify({ username, password }),
     });
 
+    
     const data = await res.json();
-
     if (!res.ok) {
       setError(data.error || 'Login failed');
       setSubmitting(false)
     } else {
-      localStorage.setItem('user', JSON.stringify(data)); // simple session
       setUser(data.user);
+      router.refresh();
       router.push('/dashboard');
     }
   };

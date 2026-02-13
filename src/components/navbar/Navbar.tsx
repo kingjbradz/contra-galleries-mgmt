@@ -10,7 +10,6 @@ export default function Navbar({ title }: { title: string }) {
   const handleLogout = async () => {
     setSubmitting(true)
     await fetch('/api/logout', { method: 'POST' });
-    localStorage.removeItem('user');
     router.push('/login');
   };
   return (
