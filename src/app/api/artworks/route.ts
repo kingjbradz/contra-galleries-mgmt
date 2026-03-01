@@ -5,7 +5,12 @@ export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
       .from("artworks")
-      .select("*")
+      .select(
+        `
+    *,
+    artwork_images (*)
+  `
+      )
       .order("id", { ascending: true });
 
     if (error) {

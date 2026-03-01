@@ -1,6 +1,188 @@
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import {
+//   Alert,
+//   FormControlLabel,
+//   Checkbox,
+//   TextField,
+//   Button,
+//   Stack,
+//   Select,
+//   MenuItem,
+// } from "@mui/material";
+// import { supabase } from "@/lib/supabaseClient";
+
+// export interface Artist {
+//   id: string;
+//   name: string;
+// }
+
+// type Props = {
+//   onSuccess?: () => void;
+// };
+
+// export default function AddArtworkForm({ onSuccess }: Props) {
+//   const [artists, setArtists] = useState<Artist[]>([]);
+//   // const [artistId, setArtistId] = useState("");
+//   const [artwork, setArtwork] = useState({
+//     artist_id: "",
+//     title: "",
+//     year: "",
+//     material: "",
+//     dimensions: "",
+//     info: "",
+//     price: "",
+//     signed: false,
+//     error: "",
+//   });
+//   const [error, setError] = useState(false);
+//   const [submitting, setSubmitting] = useState(false);
+
+//   useEffect(() => {
+//     const loadArtists = async () => {
+//       const { data, error } = await supabase
+//         .from("artists")
+//         .select("id, name")
+//         .order("name");
+
+//       if (!error && data) {
+//         setArtists(data);
+//       }
+//     };
+
+//     loadArtists();
+//   }, []);
+
+//   async function handleSubmit(e: React.FormEvent) {
+//     e.preventDefault();
+//     setSubmitting(true);
+
+//     const res = await fetch("/api/artworks", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(artwork),
+//     });
+
+//     setSubmitting(false);
+
+//     if (!res.ok) {
+//       setError(true);
+//       return;
+//     }
+
+//     onSuccess?.();
+//   }
+
+//   return (
+//     <form onSubmit={handleSubmit}>
+//       <Stack spacing={2}>
+//         <Select
+//           value={artwork.artist_id}
+//           label="Artist"
+//           onChange={(e) => setArtwork({
+//             ...artwork,
+//             artist_id: e.target.value
+//           })}
+//         >
+//           {artists.map((artist) => (
+
+//           <MenuItem key={artist.id} value={artist.id}>{artist.name}</MenuItem>
+//         ))}
+//         </Select>
+//         <TextField
+//           label="Title"
+//           value={artwork.title}
+//           required
+//           onChange={(e) =>
+//             setArtwork({
+//               ...artwork,
+//               title: e.target.value,
+//             })
+//           }
+//         />
+//         <TextField
+//           label="Year"
+//           value={artwork.year}
+//           required
+//           onChange={(e) =>
+//             setArtwork({
+//               ...artwork,
+//               year: e.target.value,
+//             })
+//           }
+//         />
+//         <TextField
+//           label="Material"
+//           value={artwork.material}
+//           required
+//           onChange={(e) =>
+//             setArtwork({
+//               ...artwork,
+//               material: e.target.value,
+//             })
+//           }
+//         />
+//         <TextField
+//           label="Dimensions"
+//           value={artwork.dimensions}
+//           required
+//           onChange={(e) =>
+//             setArtwork({
+//               ...artwork,
+//               dimensions: e.target.value,
+//             })
+//           }
+//         />
+//         <TextField
+//           label="Info"
+//           value={artwork.info}
+//           multiline
+//           rows={3}
+//           onChange={(e) =>
+//             setArtwork({
+//               ...artwork,
+//               info: e.target.value,
+//             })
+//           }
+//         />
+//         <TextField
+//           label="Price"
+//           value={artwork.price}
+//           required
+//           onChange={(e) =>
+//             setArtwork({
+//               ...artwork,
+//               price: e.target.value,
+//             })
+//           }
+//         />
+//         <FormControlLabel
+//           control={
+//             <Checkbox
+//               value={artwork.signed}
+//               onChange={(e) =>
+//                 setArtwork({
+//                   ...artwork,
+//                   signed: e.target.checked,
+//                 })
+//               }
+//             />
+//           }
+//           label="Signed?"
+//         />
+//         <Button type="submit" variant="contained" loading={submitting}>
+//           Create Artwork
+//         </Button>
+//         {error && <Alert severity="error">There is something wrong.</Alert>}
+//       </Stack>
+//     </form>
+//   );
+// }
+
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import {
   Alert,
   FormControlLabel,
@@ -10,171 +192,249 @@ import {
   Stack,
   Select,
   MenuItem,
+  Typography,
+  Box,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
+// Client-side client for fetching dropdown data
 import { supabase } from "@/lib/supabaseClient";
+// Our Server Action logic
+import { createArtworkAction } from "@/lib/artworkLogic";
+import heic2any from "heic2any";
+import { useImageUpload } from "@/hooks/useImageUpload";
 
-export interface Artist {
-  id: string;
-  name: string;
-}
-
-type Props = {
+export default function AddArtworkForm({
+  onSuccess,
+}: {
   onSuccess?: () => void;
-};
-
-export default function AddArtworkForm({ onSuccess }: Props) {
-  const [artists, setArtists] = useState<Artist[]>([]);
-  // const [artistId, setArtistId] = useState("");
-  const [artwork, setArtwork] = useState({
-    artist_id: "",
-    title: "",
-    year: "",
-    material: "",
-    dimensions: "",
-    info: "",
-    price: "",
-    signed: false,
-    error: "",
-  });
-  const [error, setError] = useState(false);
+}) {
+  const {
+    selectedFiles,
+    setSelectedFiles,
+    previews,
+    setPreviews,
+    isProcessing,
+    handleFileChange,
+    removeImage,
+    makeCover,
+  } = useImageUpload();
+  const [artists, setArtists] = useState<{ id: string; name: string }[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
+  // Load artists from Supabase on mount
   useEffect(() => {
     const loadArtists = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("artists")
         .select("id, name")
         .order("name");
-
-      if (!error && data) {
-        setArtists(data);
-      }
+      if (data) setArtists(data);
     };
-
     loadArtists();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!formRef.current) return;
     setSubmitting(true);
+    const formData = new FormData(formRef.current);
 
-    const res = await fetch("/api/artworks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(artwork),
+    formData.delete("images");
+
+    selectedFiles.forEach((file) => {
+      formData.append("images", file);
     });
 
+    const result = await createArtworkAction(formData);
+
     setSubmitting(false);
-
-    if (!res.ok) {
-      setError(true);
-      return;
+    if (!result?.error) {
+      formRef.current.reset();
+      setSelectedFiles([]);
+      setPreviews([]);
+      onSuccess?.();
     }
-
-    onSuccess?.();
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack spacing={2}>
-        <Select
-          value={artwork.artist_id}
-          label="Artist"
-          onChange={(e) => setArtwork({
-            ...artwork,
-            artist_id: e.target.value
-          })}
-        >
-          {artists.map((artist) => (
-      
-          <MenuItem key={artist.id} value={artist.id}>{artist.name}</MenuItem>
-        ))}
-        </Select>
+    <form ref={formRef} onSubmit={handleSubmit}>
+      <Stack spacing={3} sx={{ maxWidth: 600, mx: "auto" }}>
+        {/* Artist Selection */}
+        <FormControl fullWidth required>
+          <InputLabel id="artist-select-label">Artist</InputLabel>
+          <Select
+            name="artist_id"
+            labelId="artist-select-label"
+            defaultValue=""
+            label="Artist"
+          >
+            {artists.map((artist) => (
+              <MenuItem key={artist.id} value={artist.id}>
+                {artist.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <TextField name="title" label="Artwork Title" required fullWidth />
+
+        <Stack direction="row" spacing={2}>
+          <TextField name="year" label="Year" required fullWidth />
+          <TextField name="price" label="Price (e.g. 500)" required fullWidth />
+        </Stack>
+
         <TextField
-          label="Title"
-          value={artwork.title}
+          name="material"
+          label="Material / Medium"
           required
-          onChange={(e) =>
-            setArtwork({
-              ...artwork,
-              title: e.target.value,
-            })
-          }
+          fullWidth
         />
         <TextField
-          label="Year"
-          value={artwork.year}
+          name="dimensions"
+          label="Dimensions (e.g. 24x36in)"
           required
-          onChange={(e) =>
-            setArtwork({
-              ...artwork,
-              year: e.target.value,
-            })
-          }
+          fullWidth
         />
+
         <TextField
-          label="Material"
-          value={artwork.material}
-          required
-          onChange={(e) =>
-            setArtwork({
-              ...artwork,
-              material: e.target.value,
-            })
-          }
-        />
-        <TextField
-          label="Dimensions"
-          value={artwork.dimensions}
-          required
-          onChange={(e) =>
-            setArtwork({
-              ...artwork,
-              dimensions: e.target.value,
-            })
-          }
-        />
-        <TextField
-          label="Info"
-          value={artwork.info}
+          name="info"
+          label="Artwork Description / Info"
           multiline
           rows={3}
-          onChange={(e) =>
-            setArtwork({
-              ...artwork,
-              info: e.target.value,
-            })
-          }
+          fullWidth
         />
-        <TextField
-          label="Price"
-          value={artwork.price}
-          required
-          onChange={(e) =>
-            setArtwork({
-              ...artwork,
-              price: e.target.value,
-            })
-          }
-        />
+
         <FormControlLabel
-          control={
-            <Checkbox
-              value={artwork.signed}
-              onChange={(e) =>
-                setArtwork({
-                  ...artwork,
-                  signed: e.target.checked,
-                })
-              }
-            />
-          }
-          label="Signed?"
+          control={<Checkbox name="signed" value="true" />}
+          label="Is this work signed by the artist?"
         />
-        <Button type="submit" variant="contained" loading={submitting}>
-          Create Artwork
+
+        {/* Image Upload Area */}
+        <Box
+          sx={{
+            p: 3,
+            border: "2px dashed",
+            borderColor: "divider",
+            borderRadius: 2,
+            textAlign: "center",
+            bgcolor: "grey.50",
+          }}
+        >
+          <Typography variant="subtitle2" gutterBottom>
+            Upload Images
+          </Typography>
+
+          <Button variant="outlined" component="label" sx={{ mb: 2 }}>
+            Add Photos
+            <input
+              type="file"
+              name="images"
+              hidden
+              multiple
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </Button>
+
+          {/* Horizontal Scroll for Previews */}
+          {previews.length > 0 && (
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ overflowX: "auto", py: 1 }}
+            >
+              {selectedFiles.map((file, index) => {
+                const url = previews[index];
+                return (
+                  <Box key={url} sx={{ position: "relative", flexShrink: 0 }}>
+                    <img
+                      src={url}
+                      alt="Preview"
+                      style={{
+                        width: 120,
+                        height: 120,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                        border:
+                          index === 0 ? "2px solid #1976d2" : "1px solid #ddd",
+                      }}
+                    />
+
+                    {/* THE COVER BADGE */}
+                    {index === 0 && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          bgcolor: "primary.main",
+                          color: "white",
+                          px: 1,
+                          fontSize: "0.65rem",
+                          fontWeight: "bold",
+                          borderRadius: "8px 0 8px 0",
+                          zIndex: 1,
+                        }}
+                      >
+                        COVER
+                      </Box>
+                    )}
+
+                    {/* ACTION BUTTONS */}
+                    <Stack
+                      direction="row"
+                      sx={{ position: "absolute", bottom: 4, right: 4 }}
+                      spacing={0.5}
+                    >
+                      {index > 0 && (
+                        <Button
+                          size="small"
+                          variant="contained"
+                          onClick={() => makeCover(index)}
+                          sx={{
+                            minWidth: 0,
+                            p: 0.5,
+                            fontSize: "0.6rem",
+                            bgcolor: "success.main",
+                          }}
+                        >
+                          ⭐
+                        </Button>
+                      )}
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="error"
+                        onClick={() => removeImage(index)}
+                        sx={{ minWidth: 0, p: 0.5, fontSize: "0.6rem" }}
+                      >
+                        ✕
+                      </Button>
+                    </Stack>
+                  </Box>
+                );
+              })}
+            </Stack>
+          )}
+        </Box>
+
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={submitting || isProcessing || selectedFiles.length === 0}
+          sx={{ py: 1.5 }}
+        >
+          {isProcessing
+            ? "Processing Images..."
+            : submitting
+            ? "Saving to Database..."
+            : "Add Artwork"}
         </Button>
-        {error && <Alert severity="error">There is something wrong.</Alert>}
+        {error && <Alert severity="error">{error}</Alert>}
       </Stack>
     </form>
   );

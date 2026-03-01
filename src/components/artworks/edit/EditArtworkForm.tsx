@@ -1,20 +1,48 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Alert, Checkbox, Select, MenuItem, FormControlLabel, TextField, Button, Stack } from "@mui/material";
-import { Artwork } from "@/app/(protected)/artworks/page";
-import { Artist } from "../add/AddArtworkForm";
+import {
+  Alert,
+  Box,
+  Checkbox,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  TextField,
+  Button,
+  Stack,
+} from "@mui/material";
+import { Artwork, ArtworkImage } from "@/app/(protected)/artworks/page";
+import { useImageUpload } from "@/hooks/useImageUpload";
+import { updateArtworkAction } from "@/lib/artworkLogic";
 import { supabase } from "@/lib/supabaseClient";
 
-
-type Props = {
+interface EditArtworkFormProps {
   artwork: Artwork;
-  onSuccess?: () => void;
-};
+  initialImages: ArtworkImage[];
+  onSuccess: () => void;
+}
 
-export default function EditArtworkForm({ artwork, onSuccess }: Props) {
-  const [artists, setArtists] = useState<Artist[]>([]);
+export default function EditArtworkForm({
+  artwork,
+  initialImages,
+  onSuccess,
+}: EditArtworkFormProps) {
+  const {
+    previews,
+    selectedFiles,
+    isProcessing,
+    handleFileChange,
+    removeImage,
+    makeCover,
+  } = useImageUpload(
+    // We map the objects to strings and sort so the cover is first in the UI
+    initialImages.sort((a, b) => (a.is_cover ? -1 : 1)).map((img) => img.url)
+  );
+
+  const [artists, setArtists] = useState<{ id: string; name: string }[]>([]);
   const [editedArtwork, setEditedArtwork] = useState<Artwork>({
+    id: artwork.id,
     artist_id: artwork.artist_id,
     title: artwork.title,
     year: artwork.year,
@@ -24,7 +52,8 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
     price: artwork.price,
     signed: artwork.signed,
   });
-  const [error, setError] = useState(false)
+
+  const [error, setError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -42,26 +71,70 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
     loadArtists();
   }, []);
 
-  async function handleSubmit(e: React.FormEvent) {
+  // async function handleSubmit(e: React.FormEvent) {
+  //   e.preventDefault();
+  //   setSubmitting(true);
+  //   console.log()
+
+  //   const res = await fetch(`/api/artworks/${artwork.id}`, {
+  //     method: "PUT",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(editedArtwork),
+  //   });
+
+  //   setSubmitting(false);
+
+  //   if (!res.ok) {
+  //     setError(true)
+  //     return;
+  //   }
+
+  //   onSuccess?.();
+  // }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
-    console.log()
 
-    const res = await fetch(`/api/artworks/${artwork.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editedArtwork),
-    });
+    try {
+      const formData = new FormData(e.currentTarget);
 
-    setSubmitting(false);
+      // 1. Identify which previews are already in R2 vs. which are new local blobs
+      const keptRemoteUrls = previews.filter((url) => !url.startsWith("blob:"));
 
-    if (!res.ok) {
-      setError(true)
-      return;
+      // 2. Create the Order Map
+      // We send the actual URL for existing images, and the string 'new' for new ones
+      const orderMap = previews.map((url) =>
+        url.startsWith("blob:") ? "new" : url
+      );
+
+      // 3. Sync the 'images' field with our hook's File objects
+      // We delete the default browser file input and append our controlled state
+      formData.delete("images");
+      selectedFiles.forEach((file) => formData.append("images", file));
+
+      // 4. Append the reconciliation data for the server
+      // 'keptImages' tells the server which old files NOT to delete/ignore
+      keptRemoteUrls.forEach((url) => formData.append("keptImages", url));
+
+      // 'imageOrder' tells the server the final sequence [Cover, 2, 3...]
+      formData.append("imageOrder", JSON.stringify(orderMap));
+
+      // 5. Fire off the Server Action
+      console.log("form data at line 124 is", formData)
+      const result = await updateArtworkAction(formData, artwork.id!);
+
+      if (result?.error) {
+        alert(result.error);
+      } else {
+        onSuccess?.();
+      }
+    } catch (err) {
+      console.error("Submit error:", err);
+    } finally {
+      setSubmitting(false);
     }
-
-    onSuccess?.();
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -69,18 +142,23 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
         <Select
           value={editedArtwork.artist_id || ""}
           label="Artist"
-          onChange={(e) => setEditedArtwork({
-            ...artwork,
-            artist_id: e.target.value
-          })}
+          name="artist_id"
+          onChange={(e) =>
+            setEditedArtwork({
+              ...artwork,
+              artist_id: e.target.value,
+            })
+          }
         >
           {artists.map((artist) => (
-      
-          <MenuItem key={artist.id} value={artist.id}>{artist.name}</MenuItem>
-        ))}
+            <MenuItem key={artist.id} value={artist.id}>
+              {artist.name}
+            </MenuItem>
+          ))}
         </Select>
         <TextField
           label="Title"
+          name="title"
           value={editedArtwork.title || ""}
           required
           onChange={(e) =>
@@ -92,6 +170,7 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
         />
         <TextField
           label="Year"
+          name="year"
           value={editedArtwork.year || ""}
           required
           onChange={(e) =>
@@ -103,6 +182,7 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
         />
         <TextField
           label="Material"
+          name="material"
           value={editedArtwork.material || ""}
           required
           onChange={(e) =>
@@ -114,6 +194,7 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
         />
         <TextField
           label="Dimensions"
+          name="dimensions"
           value={editedArtwork.dimensions || ""}
           required
           onChange={(e) =>
@@ -125,6 +206,7 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
         />
         <TextField
           label="Info"
+          name="info"
           value={editedArtwork.info || ""}
           multiline
           rows={3}
@@ -137,6 +219,7 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
         />
         <TextField
           label="Price"
+          name="price"
           value={editedArtwork.price || ""}
           required
           onChange={(e) =>
@@ -150,6 +233,7 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
           control={
             <Checkbox
               value={editedArtwork.signed || false}
+              name="signed"
               onChange={(e) =>
                 setEditedArtwork({
                   ...artwork,
@@ -160,8 +244,103 @@ export default function EditArtworkForm({ artwork, onSuccess }: Props) {
           }
           label="Signed?"
         />
+        {/* IMAGE UPLOAD SECTION */}
+        <Button
+          variant="outlined"
+          component="label"
+          disabled={isProcessing}
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          {isProcessing ? "Processing..." : "Add Images"}
+          <input
+            type="file"
+            name="images"
+            hidden
+            multiple
+            accept="image/*,.heic"
+            onChange={handleFileChange}
+          />
+        </Button>
+
+        {previews.length > 0 && (
+          <Stack direction="row" spacing={2} sx={{ overflowX: "auto", py: 1 }}>
+            {/* CRITICAL CHANGE: Map over 'previews' instead of 'selectedFiles' 
+        because 'previews' contains both old URLs and new local blobs.
+    */}
+            {previews.map((url, index) => (
+              <Box key={url} sx={{ position: "relative", flexShrink: 0 }}>
+                <img
+                  src={url}
+                  alt="Preview"
+                  style={{
+                    width: 120,
+                    height: 120,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    border:
+                      index === 0 ? "2px solid #1976d2" : "1px solid #ddd",
+                  }}
+                />
+
+                {/* THE COVER BADGE */}
+                {index === 0 && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      bgcolor: "primary.main",
+                      color: "white",
+                      px: 1,
+                      fontSize: "0.65rem",
+                      fontWeight: "bold",
+                      borderRadius: "8px 0 8px 0",
+                      zIndex: 1,
+                    }}
+                  >
+                    COVER
+                  </Box>
+                )}
+
+                {/* ACTION BUTTONS */}
+                <Stack
+                  direction="row"
+                  sx={{ position: "absolute", bottom: 4, right: 4 }}
+                  spacing={0.5}
+                >
+                  {index > 0 && (
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={() => makeCover(index)}
+                      sx={{
+                        minWidth: 0,
+                        p: 0.5,
+                        fontSize: "0.6rem",
+                        bgcolor: "success.main",
+                      }}
+                    >
+                      ⭐
+                    </Button>
+                  )}
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="error"
+                    onClick={() => removeImage(index)}
+                    sx={{ minWidth: 0, p: 0.5, fontSize: "0.6rem" }}
+                  >
+                    ✕
+                  </Button>
+                </Stack>
+              </Box>
+            ))}
+          </Stack>
+        )}
+
         <Button type="submit" variant="contained" loading={submitting}>
-          Edit Artwork
+          Submit Edit
         </Button>
         {error && <Alert severity="error">There is something wrong.</Alert>}
       </Stack>

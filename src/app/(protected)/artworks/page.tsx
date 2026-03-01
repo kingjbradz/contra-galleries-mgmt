@@ -15,6 +15,14 @@ import AddArtworkForm from "@/components/artworks/add/AddArtworkForm";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Progress from "@/components/ui/Progress";
 
+export interface ArtworkImage {
+  id?: string; // Optional if you don't need the ID on the client
+  artwork_id: string;
+  url: string;
+  is_cover: boolean;
+  created_at?: string;
+}
+
 export interface Artwork {
   id?: string;
   title: string;
@@ -26,6 +34,7 @@ export interface Artwork {
   dimensions?: string;
   artist_id?: string;
   error?: string;
+  artwork_images?: ArtworkImage[];
 }
 
 export default function ArtistsPage() {
@@ -85,6 +94,7 @@ export default function ArtistsPage() {
                   {(close) => (
                     <EditArtworkForm
                       artwork={artwork}
+                      initialImages={artwork.artwork_images || []}
                       onSuccess={() => {
                         close();
                         loadArtworks();
