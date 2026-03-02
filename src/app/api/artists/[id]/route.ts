@@ -46,10 +46,10 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
-    const updateData: { name?: string; bio?: string } = {};
+    const updateData: { name?: string; notes?: string } = {};
 
     if (body.name !== undefined) updateData.name = body.name;
-    if (body.bio !== undefined) updateData.bio = body.bio;
+    if (body.notes !== undefined) updateData.notes = body.notes;
 
     console.log("artists keys", Object.keys(updateData))
 

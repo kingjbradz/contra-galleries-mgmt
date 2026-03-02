@@ -20,7 +20,7 @@ import { deleteArtworkAction } from "@/lib/artworkActions";
 export interface Artist {
   id?: string;
   name: string;
-  bio?: string;
+  notes?: string;
   error?: string;
 }
 

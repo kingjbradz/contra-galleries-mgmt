@@ -36,10 +36,10 @@ export default async function ArtistPage({
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          <Typography component="span">Bio</Typography>
+          <Typography component="span">Notes</Typography>
         </AccordionSummary>
         <AccordionDetails>
-            <Typography>{artist.bio}</Typography>
+            <Typography>{artist.notes}</Typography>
 
         </AccordionDetails>
       </Accordion>

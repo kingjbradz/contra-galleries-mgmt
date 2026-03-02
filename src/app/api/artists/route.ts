@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { name, bio = null } = body;
+    const { name, notes = null } = body;
 
     if (!name || typeof name !== "string") {
       return NextResponse.json(
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       .insert([
         {
           name,
-          bio,
+          notes,
         },
       ])
       .select()

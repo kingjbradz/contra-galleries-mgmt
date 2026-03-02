@@ -10,7 +10,7 @@ type Props = {
 export default function AddArtistForm({ onSuccess }: Props) {
   const [artist, setArtist] = useState({
     name: "",
-    bio: ""
+    notes: ""
   })
   const [error, setError] = useState(false)
   const [submitting, setSubmitting] = useState(false);
@@ -50,12 +50,12 @@ export default function AddArtistForm({ onSuccess }: Props) {
 
         <TextField
           label="Info"
-          value={artist.bio}
+          value={artist.notes}
           multiline
           rows={3}
           onChange={(e) => setArtist({
             ...artist,
-            bio: e.target.value
+            notes: e.target.value
           })}
           helperText="Add any notes here - this is not public."
         />

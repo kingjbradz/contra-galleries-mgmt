@@ -13,7 +13,7 @@ type Props = {
 export default function EditArtistForm({ artist, onSuccess }: Props) {
   const [editedArtist, setEditedArtist] = useState<Artist>({
     name: artist.name,
-    bio: artist.bio,
+    notes: artist.notes,
   });
   const [error, setError] = useState(false)
   const [submitting, setSubmitting] = useState(false);
@@ -54,12 +54,12 @@ export default function EditArtistForm({ artist, onSuccess }: Props) {
 
         <TextField
           label="Info"
-          value={editedArtist.bio || ""}
+          value={editedArtist.notes || ""}
           multiline
           rows={3}
           onChange={(e) => setEditedArtist({
             ...editedArtist,
-            bio: e.target.value
+            notes: e.target.value
           })}
           helperText="Add any notes here - this is not public."
         />

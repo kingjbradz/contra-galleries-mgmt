@@ -8,13 +8,13 @@ ON CONFLICT (username) DO NOTHING;  -- keep this one
 
 -- 2. Artists
 -- No UNIQUE constraint on name, so remove ON CONFLICT
-INSERT INTO artists (name, bio)
+INSERT INTO artists (name, notes)
 VALUES
-  ('Artist 1', 'Bio for Artist 1'),
-  ('Artist 2', 'Bio for Artist 2'),
-  ('Artist 3', 'Bio for Artist 3'),
-  ('Artist 4', 'Bio for Artist 4'),
-  ('Artist 5', 'Bio for Artist 5');
+  ('Artist 1', 'Notes for Artist 1'),
+  ('Artist 2', 'Notes for Artist 2'),
+  ('Artist 3', 'Notes for Artist 3'),
+  ('Artist 4', 'Notes for Artist 4'),
+  ('Artist 5', 'Notes for Artist 5');
 
 -- 3. Artworks
 -- No UNIQUE constraint on title, so remove ON CONFLICT
