@@ -49,7 +49,7 @@ export default function AddArtistForm({ onSuccess }: Props) {
         />
 
         <TextField
-          label="Bio"
+          label="Info"
           value={artist.bio}
           multiline
           rows={3}
@@ -57,6 +57,7 @@ export default function AddArtistForm({ onSuccess }: Props) {
             ...artist,
             bio: e.target.value
           })}
+          helperText="Add any notes here - this is not public."
         />
 
         <Button
