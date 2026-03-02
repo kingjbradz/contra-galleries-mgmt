@@ -14,6 +14,8 @@ import ModalButton from "@/components/ui/ModalButton";
 import AddArtistForm from "@/components/artists/add/AddArtistForm";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
 import Progress from "@/components/ui/Progress";
+import DeleteConfirmation from "@/components/ui/DeleteConfirmation";
+import { deleteArtworkAction } from "@/lib/artworkActions";
 
 export interface Artist {
   id?: string;

@@ -200,7 +200,7 @@ import {
 // Client-side client for fetching dropdown data
 import { supabase } from "@/lib/supabaseClient";
 // Our Server Action logic
-import { createArtworkAction } from "@/lib/artworkLogic";
+import { createArtworkAction } from "@/lib/artworkActions";
 import heic2any from "heic2any";
 import { useImageUpload } from "@/hooks/useImageUpload";
 

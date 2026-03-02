@@ -3,17 +3,13 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
-import {
-  Card,
-  CardContent,
-  Button,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Button, Grid, Typography } from "@mui/material";
 import ModalButton from "@/components/ui/ModalButton";
 import AddArtworkForm from "@/components/artworks/add/AddArtworkForm";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Progress from "@/components/ui/Progress";
+import DeleteConfirmation from "@/components/ui/DeleteConfirmation";
+import { deleteArtworkAction } from "@/lib/artworkActions";
 
 export interface ArtworkImage {
   id?: string; // Optional if you don't need the ID on the client
@@ -83,14 +79,10 @@ export default function ArtistsPage() {
               <CardContent>
                 <Typography variant="h6">{artwork.title}</Typography>
                 <Button onClick={() => router.push(`/artworks/${artwork.id}`)}>
-                  View Artwork
+                  View
                 </Button>
                 {/* <EditArtistButton artist={artist} onArtistEdited={loadArtworks}/> */}
-                <ModalButton
-                  label="Edit Artwork"
-                  title="Edit Artwork"
-                  variant="text"
-                >
+                <ModalButton label="Edit" title="Edit Artwork" variant="text">
                   {(close) => (
                     <EditArtworkForm
                       artwork={artwork}
@@ -98,6 +90,23 @@ export default function ArtistsPage() {
                       onSuccess={() => {
                         close();
                         loadArtworks();
+                      }}
+                    />
+                  )}
+                </ModalButton>
+                <ModalButton
+                  label="Delete"
+                  title="Delete Artwork"
+                  variant="text"
+                >
+                  {(close) => (
+                    <DeleteConfirmation
+                      type="artwork"
+                      // Pass the function definition
+                      action={() => deleteArtworkAction(artwork.id!)}
+                      onSuccess={() => {
+                        close();
+                        loadArtworks(); // Refresh the list
                       }}
                     />
                   )}

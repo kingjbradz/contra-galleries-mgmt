@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { Artwork, ArtworkImage } from "@/app/(protected)/artworks/page";
 import { useImageUpload } from "@/hooks/useImageUpload";
-import { updateArtworkAction } from "@/lib/artworkLogic";
+import { updateArtworkAction } from "@/lib/artworkActions";
 import { supabase } from "@/lib/supabaseClient";
 
 interface EditArtworkFormProps {

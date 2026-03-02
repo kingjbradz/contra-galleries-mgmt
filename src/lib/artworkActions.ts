@@ -3,7 +3,7 @@
 // @ts-ignore
 import heicConvert from 'heic-convert'
 import sharp from 'sharp';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { supabaseAdmin } from '@/lib/supabaseAdmin'; 
 
 const r2 = new S3Client({
@@ -152,10 +152,45 @@ export async function updateArtworkAction(formData: FormData, artworkId: string)
       uploadedUrls.push(`${process.env.R2_PUBLIC_URL}/${key}`);
     }
 
-    // 3. Reconcile Order (The "Easy" Way)
+    // 3. IDENTIFY ORPHANS (The New Part)
+    // Get currently stored images before we delete them from the DB
+    const { data: currentImages } = await supabaseAdmin
+      .from('artwork_images')
+      .select('url')
+      .eq('artwork_id', artworkId);
+
+    const keptRemoteUrls = formData.getAll('keptImages') as string[];
+    
+    if (currentImages) {
+      // Find URLs that exist in DB but are NOT in the "kept" list from the form
+      const urlsToDelete = currentImages
+        .map(img => img.url)
+        .filter(url => !keptRemoteUrls.includes(url));
+
+      // Delete orphans from R2
+      for (const url of urlsToDelete) {
+        try {
+          // Extract the 'key' from the public URL
+          // If public URL is https://pub-xyz.r2.dev/artworks/id/file.webp
+          // The Key is: artworks/id/file.webp
+          const key = url.split(`${process.env.R2_PUBLIC_URL}/`)[1];
+          
+          if (key) {
+            await r2.send(new DeleteObjectCommand({
+              Bucket: process.env.R2_BUCKET_NAME,
+              Key: key,
+            }));
+          }
+        } catch (s3Err) {
+          console.error("Failed to delete orphaned R2 object:", url, s3Err);
+          // We don't throw here; we want the DB update to finish even if R2 cleanup fails
+        }
+      }
+    }
+
+    // 4. Reconcile Order (The "Easy" Way)
     // imageOrder is a JSON string of URLs (for existing) and 'new' placeholders
     const orderMap = JSON.parse(formData.get('imageOrder') as string);
-    const keptRemoteUrls = formData.getAll('keptImages') as string[];
 
     let newFileIndex = 0;
     const finalImageRows = orderMap.map((identifier: string, index: number) => {
@@ -169,7 +204,7 @@ export async function updateArtworkAction(formData: FormData, artworkId: string)
       };
     });
 
-    // 4. Sync Database
+    // 5. Sync Database
     // Delete all previous image links and insert the new ordered set
     await supabaseAdmin.from('artwork_images').delete().eq('artwork_id', artworkId);
     
@@ -184,5 +219,56 @@ export async function updateArtworkAction(formData: FormData, artworkId: string)
   } catch (err: any) {
     console.error("Update Error:", err);
     return { error: err.message || "An error occurred while updating the artwork." };
+  }
+}
+
+export async function deleteArtworkAction(artworkId: string) {
+  try {
+    // 1. Get all image URLs from the DB before we delete the records
+    // This ensures we know exactly what to scrub from R2
+    const { data: images } = await supabaseAdmin
+      .from('artwork_images')
+      .select('url')
+      .eq('artwork_id', artworkId);
+
+    // 2. Delete the Artwork Record
+    // If your DB has "ON DELETE CASCADE" set up for the artwork_images foreign key, 
+    // the image rows will vanish automatically. If not, delete them manually first.
+    const { error: dbError } = await supabaseAdmin
+      .from('artworks')
+      .delete()
+      .eq('id', artworkId);
+
+    if (dbError) throw dbError;
+
+    // 3. Scrub R2 Storage
+    if (images && images.length > 0) {
+      for (const img of images) {
+        const key = img.url.split(`${process.env.R2_PUBLIC_URL}/`)[1];
+        if (key) {
+          await r2.send(new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME,
+            Key: key,
+          }));
+        }
+      }
+    }
+
+    // 4. Optional: "Folder" Cleanup
+    // If there's any chance files exist in the R2 folder that weren't in the DB 
+    // (like orphaned failed uploads), we can target the prefix directly.
+    /*
+    const listParams = {
+      Bucket: process.env.R2_BUCKET_NAME,
+      Prefix: `artworks/${artworkId}/`,
+    };
+    const listedObjects = await r2.send(new ListObjectsV2Command(listParams));
+    // ... delete listedObjects.Contents ...
+    */
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Delete Error:", err);
+    return { error: err.message };
   }
 }
