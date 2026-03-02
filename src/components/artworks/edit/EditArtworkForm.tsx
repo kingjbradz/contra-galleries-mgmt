@@ -52,8 +52,6 @@ export default function EditArtworkForm({
     price: artwork.price,
     signed: artwork.signed,
   });
-
-  const [error, setError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -70,27 +68,6 @@ export default function EditArtworkForm({
 
     loadArtists();
   }, []);
-
-  // async function handleSubmit(e: React.FormEvent) {
-  //   e.preventDefault();
-  //   setSubmitting(true);
-  //   console.log()
-
-  //   const res = await fetch(`/api/artworks/${artwork.id}`, {
-  //     method: "PUT",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(editedArtwork),
-  //   });
-
-  //   setSubmitting(false);
-
-  //   if (!res.ok) {
-  //     setError(true)
-  //     return;
-  //   }
-
-  //   onSuccess?.();
-  // }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -342,7 +319,6 @@ export default function EditArtworkForm({
         <Button type="submit" variant="contained" loading={submitting}>
           Submit Edit
         </Button>
-        {error && <Alert severity="error">There is something wrong.</Alert>}
       </Stack>
     </form>
   );
