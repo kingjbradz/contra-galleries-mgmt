@@ -21,7 +21,6 @@ export default function EditArtistForm({ artist, onSuccess }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    console.log()
 
     const res = await fetch(`/api/artists/${artist.id}`, {
       method: "PUT",

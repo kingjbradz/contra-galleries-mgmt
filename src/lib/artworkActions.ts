@@ -94,7 +94,6 @@ export async function createArtworkAction(formData: FormData) {
 }
 
 export async function updateArtworkAction(formData: FormData, artworkId: string) {
-  console.log("formdata in artworkLogic 97", formData)
   try {
     // 1. Update Text Metadata in Supabase
     const { error: updateError } = await supabaseAdmin
@@ -253,18 +252,6 @@ export async function deleteArtworkAction(artworkId: string) {
         }
       }
     }
-
-    // 4. Optional: "Folder" Cleanup
-    // If there's any chance files exist in the R2 folder that weren't in the DB 
-    // (like orphaned failed uploads), we can target the prefix directly.
-    /*
-    const listParams = {
-      Bucket: process.env.R2_BUCKET_NAME,
-      Prefix: `artworks/${artworkId}/`,
-    };
-    const listedObjects = await r2.send(new ListObjectsV2Command(listParams));
-    // ... delete listedObjects.Contents ...
-    */
 
     return { success: true };
   } catch (err: any) {

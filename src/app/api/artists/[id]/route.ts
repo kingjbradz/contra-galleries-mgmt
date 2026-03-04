@@ -51,8 +51,6 @@ export async function PUT(
     if (body.name !== undefined) updateData.name = body.name;
     if (body.notes !== undefined) updateData.notes = body.notes;
 
-    console.log("artists keys", Object.keys(updateData))
-
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
         { error: "No valid fields provided" },

@@ -98,7 +98,6 @@ export default function EditArtworkForm({
       formData.append("imageOrder", JSON.stringify(orderMap));
 
       // 5. Fire off the Server Action
-      console.log("form data at line 124 is", formData)
       const result = await updateArtworkAction(formData, artwork.id!);
 
       if (result?.error) {

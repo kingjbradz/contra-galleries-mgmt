@@ -57,8 +57,6 @@ export async function PUT(
     if (body.price !== undefined) updateData.price = body.price;
     if (body.signed !== undefined) updateData.signed = body.signed;
 
-    console.log("artworks keys", Object.keys(updateData))
-
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
         { error: "No valid fields provided" },
