@@ -15,7 +15,7 @@ import AddArtistForm from "@/components/artists/add/AddArtistForm";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
 import Progress from "@/components/ui/Progress";
 import DeleteConfirmation from "@/components/ui/DeleteConfirmation";
-import { deleteArtworkAction } from "@/lib/artworkActions";
+import { deleteArtistAction } from "@/lib/artistActions";
 
 export interface Artist {
   id?: string;
@@ -70,16 +70,32 @@ export default function ArtistsPage() {
               <CardContent>
                 <Typography variant="h6">{artist.name}</Typography>
                 <Button onClick={() => router.push(`/artists/${artist.id}`)}>
-                  View Artist
+                  View
                 </Button>
                 <ModalButton
-                  label="Edit Artist"
-                  title="Edit Artist"
+                  label="Edit"
+                  title={`Edit ${artist.name}`}
                   variant="text"
                 >
                   {(close) => (
                     <EditArtistForm
                       artist={artist}
+                      onSuccess={() => {
+                        close();
+                        loadArtists();
+                      }}
+                    />
+                  )}
+                </ModalButton>
+                <ModalButton
+                  label="Delete"
+                  title={`Delete ${artist.name}`}
+                  variant="text"
+                >
+                  {(close) => (
+                    <DeleteConfirmation
+                      type="artist"
+                      action={() => deleteArtistAction(artist.id!)}
                       onSuccess={() => {
                         close();
                         loadArtists();

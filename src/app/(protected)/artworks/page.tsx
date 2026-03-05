@@ -82,7 +82,7 @@ export default function ArtistsPage() {
                   View
                 </Button>
                 {/* <EditArtistButton artist={artist} onArtistEdited={loadArtworks}/> */}
-                <ModalButton label="Edit" title="Edit Artwork" variant="text">
+                <ModalButton label="Edit" title={`Edit ${artwork.title}`} variant="text">
                   {(close) => (
                     <EditArtworkForm
                       artwork={artwork}
@@ -96,7 +96,7 @@ export default function ArtistsPage() {
                 </ModalButton>
                 <ModalButton
                   label="Delete"
-                  title="Delete Artwork"
+                  title={`Delete ${artwork.title}`}
                   variant="text"
                 >
                   {(close) => (

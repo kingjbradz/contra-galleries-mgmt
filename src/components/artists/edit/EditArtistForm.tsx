@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Alert, TextField, Button, Stack } from "@mui/material";
 import { Artist } from "@/app/(protected)/artists/page";
-
+import { updateArtistAction } from "@/lib/artistActions";
 
 type Props = {
   artist: Artist;
@@ -15,23 +15,19 @@ export default function EditArtistForm({ artist, onSuccess }: Props) {
     name: artist.name,
     notes: artist.notes,
   });
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
 
-    const res = await fetch(`/api/artists/${artist.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editedArtist),
-    });
+    const result = await updateArtistAction(artist.id!, editedArtist);
 
     setSubmitting(false);
 
-    if (!res.ok) {
-      setError(true)
+    if (result.error) {
+      setError(true);
       return;
     }
 
@@ -45,10 +41,12 @@ export default function EditArtistForm({ artist, onSuccess }: Props) {
           label="Name"
           value={editedArtist.name || ""}
           required
-          onChange={(e) => setEditedArtist({
-            ...editedArtist,
-            name: e.target.value
-          })}
+          onChange={(e) =>
+            setEditedArtist({
+              ...editedArtist,
+              name: e.target.value,
+            })
+          }
         />
 
         <TextField
@@ -56,18 +54,16 @@ export default function EditArtistForm({ artist, onSuccess }: Props) {
           value={editedArtist.notes || ""}
           multiline
           rows={3}
-          onChange={(e) => setEditedArtist({
-            ...editedArtist,
-            notes: e.target.value
-          })}
+          onChange={(e) =>
+            setEditedArtist({
+              ...editedArtist,
+              notes: e.target.value,
+            })
+          }
           helperText="Add any notes here - this is not public."
         />
 
-        <Button
-          type="submit"
-          variant="contained"
-          loading={submitting}
-        >
+        <Button type="submit" variant="contained" loading={submitting}>
           Submit Edit
         </Button>
         {error && <Alert severity="error">There is something wrong.</Alert>}

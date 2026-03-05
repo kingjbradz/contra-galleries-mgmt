@@ -3,17 +3,9 @@
 // @ts-ignore
 import heicConvert from 'heic-convert'
 import sharp from 'sharp';
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { r2 } from './r2Client';
 import { supabaseAdmin } from '@/lib/supabaseAdmin'; 
-
-const r2 = new S3Client({
-  region: 'auto',
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  },
-});
 
 export async function createArtworkAction(formData: FormData) {
   try {

@@ -21,7 +21,7 @@ export default function DeleteConfirmation({
   const getWarningMessage = () => {
     switch (type) {
       case 'artist':
-        return "Deleting an artist will also hide all their associated artworks.";
+        return "Deleting an artist will also delete all of their associated artworks, and artwork images.";
       case 'artwork':
         return "This will permanently remove the image files from storage.";
       default:
@@ -51,7 +51,7 @@ export default function DeleteConfirmation({
         Confirm Deletion
       </Typography>
       <Typography variant="body1" sx={{ mb: 1 }}>
-        Are you sure you want to delete this **{type}**?
+        Are you sure you want to delete this <b>{type}</b>?
       </Typography>
       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 3 }}>
         {getWarningMessage()}
