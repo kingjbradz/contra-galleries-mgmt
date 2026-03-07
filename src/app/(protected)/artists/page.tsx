@@ -15,8 +15,7 @@ import AddArtistForm from "@/components/artists/add/AddArtistForm";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
 import Progress from "@/components/ui/Progress";
 import DeleteConfirmation from "@/components/ui/DeleteConfirmation";
-import { deleteArtistAction } from "@/lib/artistActions";
-import { getArtists } from "@/lib/artistActions";
+import { getArtists, deleteArtistAction } from "@/lib/artistActions";
 
 export interface Artist {
   id?: string;

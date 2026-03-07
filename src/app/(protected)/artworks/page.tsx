@@ -9,7 +9,7 @@ import AddArtworkForm from "@/components/artworks/add/AddArtworkForm";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Progress from "@/components/ui/Progress";
 import DeleteConfirmation from "@/components/ui/DeleteConfirmation";
-import { deleteArtworkAction } from "@/lib/artworkActions";
+import { getArtworks, deleteArtworkAction } from "@/lib/artworkActions";
 
 export interface ArtworkImage {
   id?: string; // Optional if you don't need the ID on the client
@@ -42,9 +42,8 @@ export default function ArtistsPage() {
 
   const loadArtworks = useCallback(async () => {
     setLoadingArtworks(true);
-    const res = await fetch("/api/artworks");
-    const data = await res.json();
-    setArtworks(data.artworks);
+    const data = await getArtworks();
+    setArtworks(data);
     setLoadingArtworks(false);
   }, []);
 

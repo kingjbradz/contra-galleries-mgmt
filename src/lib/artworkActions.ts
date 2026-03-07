@@ -7,6 +7,20 @@ import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { r2 } from './r2Client';
 import { supabaseAdmin } from '@/lib/supabaseAdmin'; 
 
+export async function getArtworks() {
+  const { data, error } = await supabaseAdmin
+    .from('artworks')
+    .select('*')
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error("Fetch Artworks Error:", error);
+    return [];
+  }
+
+  return data;
+}
+
 export async function createArtworkAction(formData: FormData) {
   try {
     // 1. Create the artwork record first
