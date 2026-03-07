@@ -5,6 +5,20 @@ import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { r2 } from './r2Client'; 
 import { revalidatePath } from 'next/cache';
 
+export async function getArtists() {
+  const { data, error } = await supabaseAdmin
+    .from('artists')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) {
+    console.error("Fetch Artists Error:", error);
+    return [];
+  }
+
+  return data;
+}
+
 export async function createArtistAction(artistData: { 
   name: string; 
   notes?: string; 

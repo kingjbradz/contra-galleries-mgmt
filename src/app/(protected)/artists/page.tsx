@@ -16,6 +16,7 @@ import EditArtistForm from "@/components/artists/edit/EditArtistForm";
 import Progress from "@/components/ui/Progress";
 import DeleteConfirmation from "@/components/ui/DeleteConfirmation";
 import { deleteArtistAction } from "@/lib/artistActions";
+import { getArtists } from "@/lib/artistActions";
 
 export interface Artist {
   id?: string;
@@ -33,9 +34,8 @@ export default function ArtistsPage() {
 
   const loadArtists = useCallback(async () => {
     setLoadingArtists(true);
-    const res = await fetch("/api/artists");
-    const data = await res.json();
-    setArtists(data.artists);
+    const data = await getArtists();
+    setArtists(data);
     setLoadingArtists(false);
   }, []);
 
