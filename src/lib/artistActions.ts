@@ -19,6 +19,21 @@ export async function getArtists() {
   return data;
 }
 
+export async function getArtist(id: string) {
+  const { data, error } = await supabaseAdmin
+    .from('artists')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error("Fetch Individual Artist Error:", error);
+    return null;
+  }
+
+  return data;
+}
+
 export async function createArtistAction(artistData: { 
   name: string; 
   notes?: string; 

@@ -1,6 +1,7 @@
 import { Artwork } from "../page";
 import { Grid, Typography } from "@mui/material";
 import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
+import { getArtwork } from  "@/lib/artworkActions";
 
 export default async function ArtworkPage({
   params,
@@ -8,16 +9,7 @@ export default async function ArtworkPage({
   params: Promise<Artwork>;
 }) {
   const { id } = await params;
-
-  // Fetch data directly on the server
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/artworks/${id}`,
-    {
-      cache: "no-store", // ensures fresh data
-    }
-  );
-
-  const artwork: Artwork = await res.json();
+  const artwork: Artwork = await getArtwork(id!)
   
   return (
     <Grid container spacing={3} padding={2}>

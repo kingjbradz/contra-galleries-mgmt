@@ -21,6 +21,21 @@ export async function getArtworks() {
   return data;
 }
 
+export async function getArtwork(id: string) {
+  const { data, error } = await supabaseAdmin
+    .from('artworks')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error("Fetch Individual Artwork Error:", error);
+    return null;
+  }
+
+  return data;
+}
+
 export async function createArtworkAction(formData: FormData) {
   try {
     // 1. Create the artwork record first
