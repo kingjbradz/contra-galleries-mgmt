@@ -3,19 +3,13 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
-import {
-  Card,
-  CardContent,
-  Button,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Button, Grid, Typography } from "@mui/material";
 import ModalButton from "@/components/ui/ModalButton";
 import AddArtistForm from "@/components/artists/add/AddArtistForm";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
 import Progress from "@/components/ui/Progress";
-import DeleteConfirmation from "@/components/ui/DeleteConfirmation";
 import { getArtists, deleteArtistAction } from "@/lib/artistActions";
+import ActionButtons from "@/components/ui/ActionButtons";
 
 export interface Artist {
   id?: string;
@@ -68,7 +62,7 @@ export default function ArtistsPage() {
             <Card>
               <CardContent>
                 <Typography variant="h6">{artist.name}</Typography>
-                <Button onClick={() => router.push(`/artists/${artist.id}`)}>
+                {/* <Button onClick={() => router.push(`/artists/${artist.id}`)}>
                   View
                 </Button>
                 <ModalButton
@@ -101,7 +95,16 @@ export default function ArtistsPage() {
                       }}
                     />
                   )}
-                </ModalButton>
+                </ModalButton> */}
+                <ActionButtons
+                  itemName={artist.name}
+                  deleteType="artist"
+                  deleteAction={deleteArtistAction.bind(null, artist.id!)}
+                  
+                  editForm={<EditArtistForm artist={artist} />}
+                  viewPath={`/artists/${artist.id}`}
+                  showViewButton
+                />
               </CardContent>
             </Card>
           </Grid>

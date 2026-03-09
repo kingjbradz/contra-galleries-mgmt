@@ -70,6 +70,7 @@ export async function updateArtistAction(id: string, artistData: {
     if (error) throw error;
 
     revalidatePath('/artists');
+
     return { success: true, data };
   } catch (err: any) {
     console.error("Update Artist Error:", err);
