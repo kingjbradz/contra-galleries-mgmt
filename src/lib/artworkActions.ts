@@ -24,7 +24,11 @@ export async function getArtworks() {
 export async function getArtwork(id: string) {
   const { data, error } = await supabaseAdmin
     .from('artworks')
-    .select('*')
+    .select(`
+      *,
+      artist_name:artists(name),
+      artwork_images (*)
+    `)
     .eq('id', id)
     .single();
 
@@ -33,7 +37,10 @@ export async function getArtwork(id: string) {
     return null;
   }
 
-  return data;
+  return {
+    ...data,
+    artist_name: data.artist_name.name ?? "Unknown Artist",
+    artwork_images: data.artwork_images ?? []}
 }
 
 export async function createArtworkAction(formData: FormData) {

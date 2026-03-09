@@ -1,7 +1,13 @@
 import { Artwork } from "../page";
 import { Grid, Typography } from "@mui/material";
 import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
-import { getArtwork } from  "@/lib/artworkActions";
+import { deleteArtworkAction, getArtwork } from "@/lib/artworkActions";
+import ActionButtons from "@/components/ui/ActionButtons";
+import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
+
+const italicStyles = {
+  fontStyle: "italic"
+}
 
 export default async function ArtworkPage({
   params,
@@ -9,8 +15,8 @@ export default async function ArtworkPage({
   params: Promise<Artwork>;
 }) {
   const { id } = await params;
-  const artwork: Artwork = await getArtwork(id!)
-  
+  const artwork: Artwork = await getArtwork(id!);
+
   return (
     <Grid container spacing={3} padding={2}>
       {artwork.error ? (
@@ -19,26 +25,72 @@ export default async function ArtworkPage({
         </Typography>
       ) : (
         <>
-            <PageHeaderSetter title={artwork.title} />
+          <PageHeaderSetter title={artwork.title} />
+          <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>   
+          <ActionButtons
+            itemName={artwork.title}
+            deleteType="artwork"
+            deleteAction={deleteArtworkAction.bind(null, artwork.id!)}
+            redirectPath="/artworks"
+            editForm={
+              <EditArtworkForm
+                artwork={artwork}
+                initialImages={artwork.artwork_images || []}
+              />
+            }
+          />
+          </Grid>
+
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
-            <Typography>{artwork.info}</Typography>
+            <Typography sx={italicStyles}>Artist</Typography>
+            <Typography variant="h5">{artwork.artist_name}</Typography>
           </Grid>
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
+            <Typography sx={italicStyles}>Year</Typography>
             <Typography>{artwork.year}</Typography>
           </Grid>
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
-            <Typography>{artwork.price}</Typography>
+            <Typography sx={italicStyles}>Price</Typography>
+            <Typography>${artwork.price}</Typography>
           </Grid>
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
-            <Typography>{artwork.signed ? "signed" : "not signed"}</Typography>
-          </Grid>
-          <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
+            <Typography sx={italicStyles}>Material</Typography>
             <Typography>{artwork.material}</Typography>
           </Grid>
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
+            <Typography sx={italicStyles}>Dimensions</Typography>
             <Typography>{artwork.dimensions}</Typography>
           </Grid>
-
+          <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
+            <Typography sx={italicStyles}>Artwork Information/Bio:</Typography>
+            <Typography>{artwork.info}</Typography>
+          </Grid>
+          <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
+            <Typography><b>
+              {artwork.signed ? "Artwork is signed" : "Artwork is not signed"}
+            </b></Typography>
+          </Grid>
+          <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
+            <Typography sx={italicStyles}>Image Gallery</Typography>
+          </Grid>
+          <Grid
+            size={{ xs: 12 }}
+            sx={{ display: "flex", justifyContent: "space-evenly" }}
+          >
+            {artwork.artwork_images?.map((image) => {
+              return (
+                <img
+                  key={image.id}
+                  src={image.url}
+                  style={{
+                    height: 300,
+                    width: 300,
+                    border: image.is_cover === true ? "3px solid green" : "",
+                  }}
+                ></img>
+              );
+            })}
+          </Grid>
         </>
       )}
     </Grid>

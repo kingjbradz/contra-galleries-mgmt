@@ -32,6 +32,7 @@ export interface Artwork {
   artist_id?: string;
   error?: string;
   artwork_images?: ArtworkImage[];
+  artist_name?: string;
 }
 
 export default function ArtworksPage() {
