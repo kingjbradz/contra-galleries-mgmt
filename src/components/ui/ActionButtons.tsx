@@ -31,7 +31,7 @@ export default function ActionButtons({
 
   const handleEditSuccess = () => {
     if (editLoadFunction) {
-      editLoadFunction()
+      editLoadFunction() // need to rework to be server only
     } else {
       router.refresh()
     }
@@ -41,7 +41,7 @@ export default function ActionButtons({
     if (redirectPath) {
       router.push(redirectPath);
     } else {
-      router.refresh(); // Refresh the current server component data
+      window.location.reload(); // need to rework to server only, back to router.refresh()
     }
   };
 
@@ -54,7 +54,7 @@ export default function ActionButtons({
      </Button>
       }
       {/* EDIT */}
-      <ModalButton label="Edit" title={`Edit ${itemName}`} variant="text">
+      <ModalButton label="Edit" title={`Edit ${itemName}`} variant="text" buttonProps={{ color: "secondary" }}>
         {(close) => (
           // We clone the element to pass the close/onSuccess props automatically
           React.cloneElement(editForm as React.ReactElement<any>, {
@@ -67,7 +67,7 @@ export default function ActionButtons({
       </ModalButton>
 
       {/* DELETE */}
-      <ModalButton label="Delete" title={`Delete ${itemName}`} variant="text">
+      <ModalButton label="Delete" title={`Delete ${itemName}`} variant="text" buttonProps={{color: "error"}}>
         {(close) => (
           <DeleteConfirmation
             type={deleteType}
