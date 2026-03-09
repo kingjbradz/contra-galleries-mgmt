@@ -20,7 +20,7 @@ import { supabase } from "@/lib/supabaseClient";
 interface EditArtworkFormProps {
   artwork: Artwork;
   initialImages: ArtworkImage[];
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 export default function EditArtworkForm({

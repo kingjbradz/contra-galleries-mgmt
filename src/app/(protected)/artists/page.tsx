@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
-import { Card, CardContent, Button, Grid, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Typography } from "@mui/material";
 import ModalButton from "@/components/ui/ModalButton";
 import AddArtistForm from "@/components/artists/add/AddArtistForm";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
@@ -19,7 +18,6 @@ export interface Artist {
 }
 
 export default function ArtistsPage() {
-  const router = useRouter();
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loadingArtists, setLoadingArtists] = useState(true);
   const { user, loading } = useAuth();
@@ -62,48 +60,14 @@ export default function ArtistsPage() {
             <Card>
               <CardContent>
                 <Typography variant="h6">{artist.name}</Typography>
-                {/* <Button onClick={() => router.push(`/artists/${artist.id}`)}>
-                  View
-                </Button>
-                <ModalButton
-                  label="Edit"
-                  title={`Edit ${artist.name}`}
-                  variant="text"
-                >
-                  {(close) => (
-                    <EditArtistForm
-                      artist={artist}
-                      onSuccess={() => {
-                        close();
-                        loadArtists();
-                      }}
-                    />
-                  )}
-                </ModalButton>
-                <ModalButton
-                  label="Delete"
-                  title={`Delete ${artist.name}`}
-                  variant="text"
-                >
-                  {(close) => (
-                    <DeleteConfirmation
-                      type="artist"
-                      action={() => deleteArtistAction(artist.id!)}
-                      onSuccess={() => {
-                        close();
-                        loadArtists();
-                      }}
-                    />
-                  )}
-                </ModalButton> */}
                 <ActionButtons
                   itemName={artist.name}
                   deleteType="artist"
                   deleteAction={deleteArtistAction.bind(null, artist.id!)}
-                  
                   editForm={<EditArtistForm artist={artist} />}
                   viewPath={`/artists/${artist.id}`}
                   showViewButton
+                  editLoadFunction={loadArtists}
                 />
               </CardContent>
             </Card>

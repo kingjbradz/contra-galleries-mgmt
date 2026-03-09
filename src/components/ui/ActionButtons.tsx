@@ -1,5 +1,4 @@
 'use client'
-
 import React from "react";
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -10,11 +9,12 @@ interface ActionButtonsProps {
   showViewButton?: boolean;
   viewPath?: string;
   editForm: React.ReactElement; // The Form component (e.g., <EditArtistForm />)
-  // editLoadFunction: () => void;
+  editLoadFunction?: () => Promise<void>;
   deleteAction: () => Promise<{ success?: boolean; error?: string }>;
   deleteType: DeleteableType;
   itemName: string;
   redirectPath?: string; // Where to go after a delete (optional)
+  
 }
 
 export default function ActionButtons({ 
@@ -24,9 +24,18 @@ export default function ActionButtons({
   deleteAction, 
   deleteType, 
   itemName,
-  redirectPath 
+  redirectPath,
+  editLoadFunction
 }: ActionButtonsProps) {
   const router = useRouter();
+
+  const handleEditSuccess = () => {
+    if (editLoadFunction) {
+      editLoadFunction()
+    } else {
+      router.refresh()
+    }
+  }
 
   const handleDeleteSuccess = () => {
     if (redirectPath) {
@@ -51,7 +60,7 @@ export default function ActionButtons({
           React.cloneElement(editForm as React.ReactElement<any>, {
             onSuccess: () => {
               close();
-              router.refresh();
+              handleEditSuccess()
             }
           })
         )}
