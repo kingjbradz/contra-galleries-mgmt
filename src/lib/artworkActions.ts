@@ -40,7 +40,36 @@ export async function getArtwork(id: string) {
   return {
     ...data,
     artist_name: data.artist_name.name ?? "Unknown Artist",
-    artwork_images: data.artwork_images ?? []}
+    artwork_images: data.artwork_images ?? []
+  }
+}
+
+export async function getArtworksByArtist(artistId: string) {
+  const { data, error } = await supabaseAdmin
+    .from('artworks')
+    .select(`
+      *,
+      artwork_images (
+        url,
+        is_cover
+      )
+    `)
+    .eq('artist_id', artistId)
+    // This is the correct way to filter the JOINED table
+    .eq('artwork_images.is_cover', true) 
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error("Error fetching artist artworks:", error);
+    return [];
+  }
+
+  // Flatten for your clean JSON preference
+  return data.map(artwork => ({
+    ...artwork,
+    cover_url: artwork.artwork_images?.[0]?.url || null,
+    artwork_images: undefined 
+  }));
 }
 
 export async function createArtworkAction(formData: FormData) {

@@ -4,6 +4,7 @@ import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
 import { deleteArtworkAction, getArtwork } from "@/lib/artworkActions";
 import ActionButtons from "@/components/ui/ActionButtons";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
+import Link from "next/link";
 
 const italicStyles = {
   fontStyle: "italic"
@@ -43,7 +44,7 @@ export default async function ArtworkPage({
 
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
             <Typography sx={italicStyles}>Artist</Typography>
-            <Typography variant="h5">{artwork.artist_name}</Typography>
+            <Link href={`/artists/${artwork.artist_id}`}><Typography variant="h5">{artwork.artist_name}</Typography></Link>
           </Grid>
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
             <Typography sx={italicStyles}>Year</Typography>
