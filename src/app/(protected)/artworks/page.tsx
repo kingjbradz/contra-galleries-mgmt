@@ -1,14 +1,10 @@
-"use client";
-import { useEffect, useState, useCallback } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
 import AddArtworkForm from "@/components/artworks/add/AddArtworkForm";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
-import Progress from "@/components/ui/Progress";
 import { getArtworks, deleteArtworkAction } from "@/lib/artworkActions";
 import ActionButtons from "@/components/ui/ActionButtons";
 import ListPageActionRow from "@/components/ui/ListPageActionRow";
+import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
 
 export interface ArtworkImage {
   id?: string; // Optional if you don't need the ID on the client
@@ -33,36 +29,15 @@ export interface Artwork {
   artist_name?: string;
 }
 
-export default function ArtworksPage() {
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [loadingArtworks, setLoadingArtworks] = useState(true);
-  const { user, loading } = useAuth();
-  const { setPageHeader } = usePageHeader();
-
-  const loadArtworks = useCallback(async () => {
-    setLoadingArtworks(true);
-    const data = await getArtworks();
-    setArtworks(data);
-    setLoadingArtworks(false);
-  }, []);
-
-  useEffect(() => {
-    setPageHeader({ title: "Artworks" });
-  }, []);
-
-  useEffect(() => {
-    loadArtworks();
-  }, [loadArtworks]);
-
-  if (loading || loadingArtworks) return <Progress />;
-  if (!user) return <Progress />; // fallback, AuthProvider handles redirect
+export default async function ArtworksPage() {
+  const artworks = await getArtworks()
   return (
     <Grid container spacing={3} padding={2}>
+      <PageHeaderSetter title="Artworks" />
       <ListPageActionRow
         label="Add Artwork"
         title="Add Artwork"
         form={<AddArtworkForm />}
-        handler={loadArtworks}
       />
       {artworks ? (
         artworks.map((artwork) => (
@@ -77,7 +52,6 @@ export default function ArtworksPage() {
                   editForm={<EditArtworkForm artwork={artwork} />}
                   viewPath={`/artworks/${artwork.id}`}
                   showViewButton
-                  editLoadFunction={loadArtworks}
                 />
               </CardContent>
             </Card>

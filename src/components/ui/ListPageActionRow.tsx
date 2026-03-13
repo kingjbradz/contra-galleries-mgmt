@@ -1,30 +1,31 @@
+"use client"
 import React from "react";
 import Link from "next/link";
 import { Box, Grid, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ModalButton from "./ModalButton";
+import { useRouter } from "next/navigation";
 
 interface ListPageActionRowProps {
   label: string;
   title: string;
   form: React.ReactElement;
   extraComponent?: React.ReactNode;
-  handler: () => Promise<void>;
 }
 
 export default function ListPageActionRow({
   label,
   title,
   form,
-  handler,
   extraComponent,
 }: ListPageActionRowProps) {
+  const router = useRouter();
   return (
     <Grid
       size={{ xs: 12 }}
       sx={{ display: "flex", justifyContent: "space-between" }}
     >
-      <Link href="/">
+      <Link href="/dashboard">
         <IconButton>
           <ArrowBackIcon />
         </IconButton>
@@ -36,7 +37,7 @@ export default function ListPageActionRow({
           React.cloneElement(form as React.ReactElement<any>, {
             onSuccess: () => {
               close();
-              handler()
+              router.refresh()
             }
           })
         )}

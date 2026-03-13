@@ -9,12 +9,10 @@ interface ActionButtonsProps {
   showViewButton?: boolean;
   viewPath?: string;
   editForm: React.ReactElement; // The Form component (e.g., <EditArtistForm />)
-  editLoadFunction?: () => Promise<void>;
   deleteAction: () => Promise<{ success?: boolean; error?: string }>;
   deleteType: DeleteableType;
   itemName: string | undefined;
   redirectPath?: string; // Where to go after a delete (optional)
-  
 }
 
 export default function ActionButtons({ 
@@ -25,23 +23,14 @@ export default function ActionButtons({
   deleteType, 
   itemName,
   redirectPath,
-  editLoadFunction
 }: ActionButtonsProps) {
   const router = useRouter();
-
-  const handleEditSuccess = () => {
-    if (editLoadFunction) {
-      editLoadFunction() // need to rework to be server only
-    } else {
-      router.refresh()
-    }
-  }
 
   const handleDeleteSuccess = () => {
     if (redirectPath) {
       router.push(redirectPath);
     } else {
-      window.location.reload(); // need to rework to server only, back to router.refresh()
+      router.refresh(); // need to rework to server only, back to router.refresh()
     }
   };
 
@@ -60,7 +49,7 @@ export default function ActionButtons({
           React.cloneElement(editForm as React.ReactElement<any>, {
             onSuccess: () => {
               close();
-              handleEditSuccess()
+              router.refresh()
             }
           })
         )}

@@ -1,11 +1,6 @@
-"use client";
-import { useEffect, useState, useCallback } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
 import AddArtistForm from "@/components/artists/add/AddArtistForm";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
-import Progress from "@/components/ui/Progress";
 import { getArtists, deleteArtistAction } from "@/lib/artistActions";
 import ActionButtons from "@/components/ui/ActionButtons";
 import ListPageActionRow from "@/components/ui/ListPageActionRow";
@@ -17,36 +12,14 @@ export interface Artist {
   error?: string;
 }
 
-export default function ArtistsPage() {
-  const [artists, setArtists] = useState<Artist[]>([]);
-  const [loadingArtists, setLoadingArtists] = useState(true);
-  const { user, loading } = useAuth();
-  const { setPageHeader } = usePageHeader();
-
-  const loadArtists = useCallback(async () => {
-    setLoadingArtists(true);
-    const data = await getArtists();
-    setArtists(data);
-    setLoadingArtists(false);
-  }, []);
-
-  useEffect(() => {
-    setPageHeader({ title: "Artists" });
-  }, []);
-
-  useEffect(() => {
-    loadArtists();
-  }, [loadArtists]);
-
-  if (loading || loadingArtists) return <Progress />;
-  if (!user) return <Progress />; // fallback, AuthProvider handles redirect
+export default async function ArtistsPage() {
+  const artists = await getArtists()
   return (
     <Grid container spacing={3} padding={2}>
       <ListPageActionRow
         label="Add Artist"
         title="Add Artist"
         form={<AddArtistForm />}
-        handler={loadArtists}
       />
       {artists ? (
         artists.map((artist) => (
@@ -61,7 +34,6 @@ export default function ArtistsPage() {
                   editForm={<EditArtistForm artist={artist} />}
                   viewPath={`/artists/${artist.id}`}
                   showViewButton
-                  editLoadFunction={loadArtists}
                 />
               </CardContent>
             </Card>
