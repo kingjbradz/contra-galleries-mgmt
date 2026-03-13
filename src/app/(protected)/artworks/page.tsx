@@ -3,12 +3,12 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
-import ModalButton from "@/components/ui/ModalButton";
 import AddArtworkForm from "@/components/artworks/add/AddArtworkForm";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Progress from "@/components/ui/Progress";
 import { getArtworks, deleteArtworkAction } from "@/lib/artworkActions";
 import ActionButtons from "@/components/ui/ActionButtons";
+import ListPageActionRow from "@/components/ui/ListPageActionRow";
 
 export interface ArtworkImage {
   id?: string; // Optional if you don't need the ID on the client
@@ -58,18 +58,12 @@ export default function ArtworksPage() {
   if (!user) return <Progress />; // fallback, AuthProvider handles redirect
   return (
     <Grid container spacing={3} padding={2}>
-      <Grid size={{ xs: 12 }}>
-        <ModalButton label="Add Artwork" title="Add Artwork">
-          {(close) => (
-            <AddArtworkForm
-              onSuccess={() => {
-                close();
-                loadArtworks();
-              }}
-            />
-          )}
-        </ModalButton>
-      </Grid>
+      <ListPageActionRow
+        label="Add Artwork"
+        title="Add Artwork"
+        form={<AddArtworkForm />}
+        handler={loadArtworks}
+      />
       {artworks ? (
         artworks.map((artwork) => (
           <Grid key={artwork.id} size={{ xs: 12, sm: 6, md: 4 }}>

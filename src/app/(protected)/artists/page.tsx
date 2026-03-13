@@ -3,12 +3,12 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
-import ModalButton from "@/components/ui/ModalButton";
 import AddArtistForm from "@/components/artists/add/AddArtistForm";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
 import Progress from "@/components/ui/Progress";
 import { getArtists, deleteArtistAction } from "@/lib/artistActions";
 import ActionButtons from "@/components/ui/ActionButtons";
+import ListPageActionRow from "@/components/ui/ListPageActionRow";
 
 export interface Artist {
   id?: string;
@@ -42,18 +42,12 @@ export default function ArtistsPage() {
   if (!user) return <Progress />; // fallback, AuthProvider handles redirect
   return (
     <Grid container spacing={3} padding={2}>
-      <Grid size={{ xs: 12 }}>
-        <ModalButton label="Add Artist" title="Add Artist">
-          {(close) => (
-            <AddArtistForm
-              onSuccess={() => {
-                close();
-                loadArtists();
-              }}
-            />
-          )}
-        </ModalButton>
-      </Grid>
+      <ListPageActionRow
+        label="Add Artist"
+        title="Add Artist"
+        form={<AddArtistForm />}
+        handler={loadArtists}
+      />
       {artists ? (
         artists.map((artist) => (
           <Grid key={artist.id} size={{ xs: 12, sm: 6, md: 4 }}>

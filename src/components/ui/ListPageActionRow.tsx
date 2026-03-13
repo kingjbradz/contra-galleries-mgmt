@@ -1,13 +1,22 @@
+import React from "react";
 import Link from "next/link";
 import { Box, Grid, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ModalButton from "./ModalButton";
 
 interface ListPageActionRowProps {
+  label: string;
+  title: string;
+  form: React.ReactElement;
   extraComponent?: React.ReactNode;
+  handler: () => Promise<void>;
 }
 
 export default function ListPageActionRow({
-
+  label,
+  title,
+  form,
+  handler,
   extraComponent,
 }: ListPageActionRowProps) {
   return (
@@ -21,7 +30,17 @@ export default function ListPageActionRow({
         </IconButton>
       </Link>
       <Box>
-
+      <ModalButton label={label} title={title}>
+      {(close) => (
+          // We clone the element to pass the close/onSuccess props automatically
+          React.cloneElement(form as React.ReactElement<any>, {
+            onSuccess: () => {
+              close();
+              handler()
+            }
+          })
+        )}
+        </ModalButton>
       {extraComponent || <Box></Box>}
       </Box>
     </Grid>
