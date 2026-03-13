@@ -2,9 +2,9 @@ import { Artwork } from "../page";
 import { Grid, Typography } from "@mui/material";
 import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
 import { deleteArtworkAction, getArtwork } from "@/lib/artworkActions";
-import ActionButtons from "@/components/ui/ActionButtons";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Link from "next/link";
+import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
 
 const italicStyles = {
   fontStyle: "italic"
@@ -27,24 +27,20 @@ export default async function ArtworkPage({
       ) : (
         <>
           <PageHeaderSetter title={artwork.title} />
-          <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>   
-          <ActionButtons
-            itemName={artwork.title}
-            deleteType="artwork"
-            deleteAction={deleteArtworkAction.bind(null, artwork.id!)}
-            redirectPath="/artworks"
-            editForm={
-              <EditArtworkForm
-                artwork={artwork}
-                initialImages={artwork.artwork_images || []}
-              />
-            }
+          <IndividualPageActionRow
+          itemName={artwork?.title}
+          deleteType="artwork"
+          deleteAction={deleteArtworkAction.bind(null, artwork.id!)}
+          redirectPath="/artworks"
+          editForm={
+            <EditArtworkForm
+              artwork={artwork}
+            />
+          }
           />
-          </Grid>
-
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
             <Typography sx={italicStyles}>Artist</Typography>
-            <Link href={`/artists/${artwork.artist_id}`}><Typography variant="h5">{artwork.artist_name}</Typography></Link>
+            <Link href={`/artists/${artwork.artist_id}`}><Typography variant="h5" color="info">{artwork.artist_name}</Typography></Link>
           </Grid>
           <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
             <Typography sx={italicStyles}>Year</Typography>

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-// import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
@@ -8,7 +7,6 @@ import ModalButton from "@/components/ui/ModalButton";
 import AddArtworkForm from "@/components/artworks/add/AddArtworkForm";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Progress from "@/components/ui/Progress";
-// import DeleteConfirmation from "@/components/ui/DeleteConfirmation";
 import { getArtworks, deleteArtworkAction } from "@/lib/artworkActions";
 import ActionButtons from "@/components/ui/ActionButtons";
 
@@ -36,7 +34,6 @@ export interface Artwork {
 }
 
 export default function ArtworksPage() {
-  // const router = useRouter();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loadingArtworks, setLoadingArtworks] = useState(true);
   const { user, loading } = useAuth();
@@ -75,45 +72,6 @@ export default function ArtworksPage() {
       </Grid>
       {artworks ? (
         artworks.map((artwork) => (
-          // <Grid key={artwork.id} size={{ xs: 12, sm: 6, md: 4 }}>
-          //   <Card>
-          //     <CardContent>
-          //       <Typography variant="h6">{artwork.title}</Typography>
-          //       <Button onClick={() => router.push(`/artworks/${artwork.id}`)}>
-          //         View
-          //       </Button>
-          //       <ModalButton label="Edit" title={`Edit ${artwork.title}`} variant="text">
-          //         {(close) => (
-          //           <EditArtworkForm
-          //             artwork={artwork}
-          //             initialImages={artwork.artwork_images || []}
-          //             onSuccess={() => {
-          //               close();
-          //               loadArtworks();
-          //             }}
-          //           />
-          //         )}
-          //       </ModalButton>
-          //       <ModalButton
-          //         label="Delete"
-          //         title={`Delete ${artwork.title}`}
-          //         variant="text"
-          //       >
-          //         {(close) => (
-          //           <DeleteConfirmation
-          //             type="artwork"
-          //             // Pass the function definition
-          //             action={() => deleteArtworkAction(artwork.id!)}
-          //             onSuccess={() => {
-          //               close();
-          //               loadArtworks(); // Refresh the list
-          //             }}
-          //           />
-          //         )}
-          //       </ModalButton>
-          //     </CardContent>
-          //   </Card>
-          // </Grid>
           <Grid key={artwork.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Card>
               <CardContent>
@@ -122,7 +80,7 @@ export default function ArtworksPage() {
                   itemName={artwork.title}
                   deleteType="artwork"
                   deleteAction={deleteArtworkAction.bind(null, artwork.id!)}
-                  editForm={<EditArtworkForm artwork={artwork} initialImages={artwork.artwork_images || []} />}
+                  editForm={<EditArtworkForm artwork={artwork} />}
                   viewPath={`/artworks/${artwork.id}`}
                   showViewButton
                   editLoadFunction={loadArtworks}

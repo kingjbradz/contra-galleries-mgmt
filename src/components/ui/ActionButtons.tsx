@@ -12,7 +12,7 @@ interface ActionButtonsProps {
   editLoadFunction?: () => Promise<void>;
   deleteAction: () => Promise<{ success?: boolean; error?: string }>;
   deleteType: DeleteableType;
-  itemName: string;
+  itemName: string | undefined;
   redirectPath?: string; // Where to go after a delete (optional)
   
 }

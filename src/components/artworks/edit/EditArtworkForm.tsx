@@ -19,13 +19,11 @@ import { supabase } from "@/lib/supabaseClient";
 
 interface EditArtworkFormProps {
   artwork: Artwork;
-  initialImages: ArtworkImage[];
   onSuccess?: () => void;
 }
 
 export default function EditArtworkForm({
   artwork,
-  initialImages,
   onSuccess,
 }: EditArtworkFormProps) {
   const {
@@ -37,8 +35,9 @@ export default function EditArtworkForm({
     makeCover,
   } = useImageUpload(
     // We map the objects to strings and sort so the cover is first in the UI
-    initialImages.sort((a, b) => (a.is_cover ? -1 : 1)).map((img) => img.url)
+    artwork?.artwork_images?.sort((a, b) => (a.is_cover ? -1 : 1)).map((img) => img.url)
   );
+
 
   const [artists, setArtists] = useState<{ id: string; name: string }[]>([]);
   const [editedArtwork, setEditedArtwork] = useState<Artwork>({

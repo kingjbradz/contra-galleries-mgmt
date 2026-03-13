@@ -3,23 +3,21 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Button,
   Card,
   CardActionArea,
   CardMedia,
   CardContent,
-  CardActions,
   Grid,
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
 import { getArtist } from "@/lib/artistActions";
-import ActionButtons from "@/components/ui/ActionButtons";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
 import { deleteArtistAction } from "@/lib/artistActions";
 import { getArtworksByArtist } from "@/lib/artworkActions";
-import NextLink from 'next/link';
+import NextLink from "next/link";
+import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
 
 export default async function ArtistPage({
   params,
@@ -39,15 +37,13 @@ export default async function ArtistPage({
       ) : (
         <>
           <PageHeaderSetter title={artist.name} />
-          <Grid size={{ xs: 12 }} sx={{ textAlign: "center" }}>
-            <ActionButtons
-              itemName={artist.name}
-              deleteType="artist"
-              deleteAction={deleteArtistAction.bind(null, artist.id!)}
-              redirectPath="/artists"
-              editForm={<EditArtistForm artist={artist} />}
-            />
-          </Grid>
+          <IndividualPageActionRow
+            itemName={artist.name}
+            deleteType="artist"
+            deleteAction={deleteArtistAction.bind(null, artist.id!)}
+            redirectPath="/artists"
+            editForm={<EditArtistForm artist={artist} />}
+          />
           <Grid
             size={{ xs: 12 }}
             sx={{ display: "flex", justifyContent: "center" }}
@@ -65,10 +61,16 @@ export default async function ArtistPage({
               </AccordionDetails>
             </Accordion>
           </Grid>
-          <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "space-evenly"}}>
+          <Grid
+            size={{ xs: 12 }}
+            sx={{ display: "flex", justifyContent: "space-evenly" }}
+          >
             {artworks.map((artwork) => (
               <Card key={artwork.id} sx={{ maxWidth: 345 }}>
-                <CardActionArea component={NextLink} href={`/artworks/${artwork.id}`}>
+                <CardActionArea
+                  component={NextLink}
+                  href={`/artworks/${artwork.id}`}
+                >
                   <CardMedia
                     component="img"
                     image={artwork.cover_url}
