@@ -114,8 +114,6 @@ export default function EditArtworkForm({
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={2}>
-      <pre>artwork: {JSON.stringify(artwork,null,2)}</pre>
-        <pre>editedArtwork: {JSON.stringify(editedArtwork,null,2)}</pre>
         <Select
           value={editedArtwork.artist_id || ""}
           label="Artist"

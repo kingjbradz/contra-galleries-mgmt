@@ -44,6 +44,21 @@ export async function getArtwork(id: string) {
   }
 }
 
+export async function getArtworkImages(artworkId: string) {
+  const { data, error } = await supabaseAdmin
+  .from('artwork_images')
+  .select('*')
+  .eq('artwork_id', artworkId)
+  .order('created_at', { ascending: true });
+
+if (error) {
+  console.error("Fetch Artwork Images Error:", error);
+  return [];
+}
+
+return data;
+}
+
 export async function getArtworksByArtist(artistId: string) {
   const { data, error } = await supabaseAdmin
     .from('artworks')

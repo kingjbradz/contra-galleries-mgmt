@@ -1,6 +1,5 @@
 import { Card, CardContent, Grid, Typography } from "@mui/material";
 import AddArtworkForm from "@/components/artworks/add/AddArtworkForm";
-import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import { getArtworks, deleteArtworkAction } from "@/lib/artworkActions";
 import ActionButtons from "@/components/ui/ActionButtons";
 import ListPageActionRow from "@/components/ui/ListPageActionRow";
@@ -49,9 +48,8 @@ export default async function ArtworksPage() {
                   itemName={artwork.title}
                   deleteType="artwork"
                   deleteAction={deleteArtworkAction.bind(null, artwork.id!)}
-                  editForm={<EditArtworkForm artwork={artwork} />}
                   viewPath={`/artworks/${artwork.id}`}
-                  showViewButton
+                  // no editForm as users should do so on an individual page as there's too many fields, images etc
                 />
               </CardContent>
             </Card>

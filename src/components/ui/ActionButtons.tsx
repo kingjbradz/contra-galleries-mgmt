@@ -6,9 +6,9 @@ import ModalButton from "@/components/ui/ModalButton";
 import DeleteConfirmation, { DeleteableType } from "@/components/ui/DeleteConfirmation";
 
 interface ActionButtonsProps {
-  showViewButton?: boolean;
+  // showViewButton?: boolean;
   viewPath?: string;
-  editForm: React.ReactElement; // The Form component (e.g., <EditArtistForm />)
+  editForm?: React.ReactElement; // The Form component (e.g., <EditArtistForm />)
   deleteAction: () => Promise<{ success?: boolean; error?: string }>;
   deleteType: DeleteableType;
   itemName: string | undefined;
@@ -16,7 +16,7 @@ interface ActionButtonsProps {
 }
 
 export default function ActionButtons({ 
-  showViewButton,
+  // showViewButton,
   viewPath,
   editForm, 
   deleteAction, 
@@ -37,13 +37,13 @@ export default function ActionButtons({
   return (
     <>
     {/* VIEW */}
-      {showViewButton && 
+      {viewPath && 
        <Button onClick={() => router.push(`${viewPath}`)}>
        View
      </Button>
       }
       {/* EDIT */}
-      <ModalButton label="Edit" title={`Edit ${itemName}`} variant="text" buttonProps={{ color: "secondary" }}>
+      {editForm && <ModalButton label="Edit" title={`Edit ${itemName}`} variant="text" buttonProps={{ color: "secondary" }}>
         {(close) => (
           // We clone the element to pass the close/onSuccess props automatically
           React.cloneElement(editForm as React.ReactElement<any>, {
@@ -53,7 +53,7 @@ export default function ActionButtons({
             }
           })
         )}
-      </ModalButton>
+      </ModalButton>}
 
       {/* DELETE */}
       <ModalButton label="Delete" title={`Delete ${itemName}`} variant="text" buttonProps={{color: "error"}}>
