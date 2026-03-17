@@ -33,7 +33,7 @@ export async function getArtwork(id: string) {
     .single();
 
   if (error) {
-    console.error("Fetch Individual Artwork Error:", error);
+    console?.log("Fetch Individual Artwork Error:", error);
     return null;
   }
 
@@ -52,7 +52,7 @@ export async function getArtworkImages(artworkId: string) {
   .order('created_at', { ascending: true });
 
 if (error) {
-  console.error("Fetch Artwork Images Error:", error);
+  console?.error("Fetch Artwork Images Error:", error);
   return [];
 }
 

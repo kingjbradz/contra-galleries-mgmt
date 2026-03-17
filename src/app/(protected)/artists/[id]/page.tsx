@@ -18,6 +18,7 @@ import { deleteArtistAction } from "@/lib/artistActions";
 import { getArtworksByArtist } from "@/lib/artworkActions";
 import NextLink from "next/link";
 import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
+import NotFoundComponent from "@/components/ui/NotFoundComponent";
 
 export default async function ArtistPage({
   params,
@@ -27,6 +28,10 @@ export default async function ArtistPage({
   const { id } = await params;
   const artist: Artist = await getArtist(id!);
   const artworks = await getArtworksByArtist(id!);
+
+  if (!artist) {
+    return <NotFoundComponent type="artist" back="/artists" />
+  }
 
   return (
     <Grid container spacing={3} padding={2}>

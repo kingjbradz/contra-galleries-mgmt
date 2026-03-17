@@ -33,7 +33,6 @@ export default async function ArtistsPage() {
                   deleteAction={deleteArtistAction.bind(null, artist.id!)}
                   editForm={<EditArtistForm artist={artist} />}
                   viewPath={`/artists/${artist.id}`}
-                  showViewButton
                 />
               </CardContent>
             </Card>

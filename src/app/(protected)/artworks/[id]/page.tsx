@@ -5,6 +5,7 @@ import { deleteArtworkAction, getArtwork } from "@/lib/artworkActions";
 import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Link from "next/link";
 import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
+import NotFoundComponent from "@/components/ui/NotFoundComponent";
 
 const italicStyles = {
   fontStyle: "italic"
@@ -17,6 +18,10 @@ export default async function ArtworkPage({
 }) {
   const { id } = await params;
   const artwork: Artwork = await getArtwork(id!);
+
+  if (!artwork) {
+    return <NotFoundComponent type="artwork" back="/artworks" />
+  }
 
   return (
     <Grid container spacing={3} padding={2}>
