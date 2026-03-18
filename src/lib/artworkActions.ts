@@ -94,6 +94,7 @@ export async function createArtworkAction(formData: FormData) {
       .from('artworks')
       .insert({
         artist_id: formData.get('artist_id'),
+        artist_name: formData.get('artist_name'),
         title: formData.get('title'),
         year: formData.get('year'),
         material: formData.get('material'),
@@ -172,6 +173,7 @@ export async function updateArtworkAction(formData: FormData, artworkId: string)
       .from('artworks')
       .update({
         title: formData.get('title'),
+        artist_name: formData.get('artist_name'),
         artist_id: formData.get('artist_id'),
         year: formData.get('year'),
         material: formData.get('material'),

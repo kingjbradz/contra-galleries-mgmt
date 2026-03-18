@@ -38,6 +38,7 @@ export default function AddArtworkForm({
     makeCover,
   } = useImageUpload();
   const [artists, setArtists] = useState<{ id: string; name: string }[]>([]);
+  const [selectedArtistName, setSelectedArtistName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -87,6 +88,10 @@ export default function AddArtworkForm({
             labelId="artist-select-label"
             defaultValue=""
             label="Artist"
+            onChange={(e) => {
+              const artist = artists.find(a => a.id === e.target.value);
+              setSelectedArtistName(artist?.name || "");
+            }}
           >
             {artists.map((artist) => (
               <MenuItem key={artist.id} value={artist.id}>
@@ -95,7 +100,7 @@ export default function AddArtworkForm({
             ))}
           </Select>
         </FormControl>
-
+        <input type="hidden" name="artist_name" value={selectedArtistName} /> // set artist name
         <TextField name="title" label="Artwork Title" required fullWidth />
 
         <Stack direction="row" spacing={2}>
