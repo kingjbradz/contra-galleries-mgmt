@@ -9,7 +9,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { getExhibitions } from "@/lib/exhibitionActions";
+import { getExhibitions, deleteExhibitionAction } from "@/lib/exhibitionActions";
 import ActionButtons from "@/components/ui/ActionButtons";
 import ListPageActionRow from "@/components/ui/ListPageActionRow";
 import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
@@ -56,13 +56,13 @@ export default async function ExhibitionsPage() {
                 <TableCell align="center">{exhibition.private ? "Yes" : "No"}</TableCell>
                 <TableCell align="center">{exhibition.onsite ? "Yes" : "No"}</TableCell>
                 <TableCell align="right">
-                  {/* <ActionButtons
-                    itemName={artwork.title}
-                    deleteType="artwork"
-                    deleteAction={deleteArtworkAction.bind(null, artwork.id!)}
-                    viewPath={`/artworks/${artwork.id}`}
+                  <ActionButtons
+                    itemName={exhibition.name}
+                    deleteType="exhibition"
+                    deleteAction={deleteExhibitionAction.bind(null, exhibition.id!)}
+                    viewPath={`/exhibitions/${exhibition.id}`}
                     // no editForm as users should do so on an individual page as there's too many fields, images etc
-                  /> */} act button
+                  />
                 </TableCell>
               </TableRow>
             ))}

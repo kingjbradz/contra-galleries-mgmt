@@ -122,3 +122,134 @@ if (artworkIds.length > 0) {
     return { error: err.message || "An unknown error occurred during upload." };
   }
 }
+
+export async function updateExhibitionAction(formData: FormData, exhibitionId: string) {
+  try {
+    // 1. Fetch current exhibition to get the existing image URL for cleanup
+    const { data: currentExh } = await supabaseAdmin
+      .from('exhibitions')
+      .select('cover_image')
+      .eq('id', exhibitionId)
+      .single();
+
+    const newFile = formData.get('cover_image') as File;
+    let finalImageUrl = currentExh?.cover_image;
+
+    // 2. Handle Image Update
+    if (newFile && newFile.size > 0) {
+      // Optimize (using your Sharp/HEIC logic)
+      const arrayBuffer = await newFile.arrayBuffer();
+      const optimized = await sharp(Buffer.from(arrayBuffer))
+        .resize(1600, 1600, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 75 })
+        .toBuffer();
+
+      const key = `exhibitions/${exhibitionId}/${Date.now()}.webp`;
+
+      // Upload New
+      await r2.send(new PutObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME,
+        Key: key,
+        Body: optimized,
+        ContentType: 'image/webp',
+      }));
+
+      // Delete Old from R2 if it exists
+      if (currentExh?.cover_image) {
+        const oldKey = currentExh.cover_image.split(`${process.env.R2_PUBLIC_URL}/`)[1];
+        if (oldKey) {
+          await r2.send(new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME,
+            Key: oldKey,
+          }));
+        }
+      }
+      finalImageUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
+    }
+
+    // 3. Update Exhibition Metadata
+    const { error: updateError } = await supabaseAdmin
+      .from('exhibitions')
+      .update({
+        name: formData.get('name'),
+        description: formData.get('description'),
+        public: formData.get('public') === 'true',
+        private: formData.get('private') === 'true',
+        onsite: formData.get('onsite') === 'true',
+        cover_image: finalImageUrl,
+      })
+      .eq('id', exhibitionId);
+
+    if (updateError) throw updateError;
+
+    // 4. Sync Artworks (The Join Table)
+    const artworkIds = JSON.parse(formData.get('artwork_ids') as string || "[]");
+
+    // Clear existing and re-insert
+    await supabaseAdmin.from('exhibition_artworks').delete().eq('exhibition_id', exhibitionId);
+    
+    if (artworkIds.length > 0) {
+      const joinData = artworkIds.map((artId: string) => ({
+        exhibition_id: exhibitionId,
+        artwork_id: artId,
+      }));
+      await supabaseAdmin.from('exhibition_artworks').insert(joinData);
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Exhibition Update Error:", err);
+    return { error: err.message };
+  }
+}
+
+export async function deleteExhibitionAction(exhibitionId: string) {
+  try {
+    // 1. Fetch the cover image URL first
+    // We do this BEFORE deleting the record so we have the R2 key
+    const { data: exhibition } = await supabaseAdmin
+      .from('exhibitions')
+      .select('cover_image')
+      .eq('id', exhibitionId)
+      .single();
+
+    // 2. Clear the Join Table (Safety Check)
+    // Even with CASCADE, manual deletion ensures no orphaned links remain 
+    // if the DB constraints are updated later.
+    await supabaseAdmin
+      .from('exhibition_artworks')
+      .delete()
+      .eq('exhibition_id', exhibitionId);
+
+    // 3. Delete the Exhibition Record
+    const { error: dbError } = await supabaseAdmin
+      .from('exhibitions')
+      .delete()
+      .eq('id', exhibitionId);
+
+    if (dbError) throw dbError;
+
+    // 4. Scrub R2 Storage
+    if (exhibition?.cover_image) {
+      const key = exhibition.cover_image.split(`${process.env.R2_PUBLIC_URL}/`)[1];
+      
+      if (key) {
+        try {
+          await r2.send(new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME,
+            Key: key,
+          }));
+        } catch (r2Err) {
+          // We log R2 errors but don't fail the action, 
+          // as the DB record is already gone.
+          console.error("Failed to scrub R2 for exhibition:", exhibitionId, r2Err);
+        }
+      }
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Exhibition Delete Error:", err);
+    return { error: err.message || "Failed to delete exhibition." };
+  }
+}
