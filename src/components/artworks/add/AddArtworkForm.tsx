@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Alert,
   FormControlLabel,
@@ -19,7 +19,6 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 // Our Server Action logic
 import { createArtworkAction } from "@/lib/artworkActions";
-import heic2any from "heic2any";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 export default function AddArtworkForm({
@@ -100,7 +99,8 @@ export default function AddArtworkForm({
             ))}
           </Select>
         </FormControl>
-        <input type="hidden" name="artist_name" value={selectedArtistName} /> // set artist name
+        {/* set artist name */}
+        <input type="hidden" name="artist_name" value={selectedArtistName} /> 
         <TextField name="title" label="Artwork Title" required fullWidth />
 
         <Stack direction="row" spacing={2}>
