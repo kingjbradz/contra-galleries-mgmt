@@ -22,12 +22,14 @@ export async function getExhibitions() {
   return data;
 }
 
-export async function getExhibiton(id: string) {
+export async function getExhibition(id: string) {
   const { data, error } = await supabaseAdmin
-    .from('exhibitons')
+    .from('exhibitions')
     .select('*')
     .eq('id', id)
     .single();
+
+
 
   if (error) {
     console.error("Fetch Individual Exhibition Error:", error);
@@ -35,6 +37,39 @@ export async function getExhibiton(id: string) {
   }
 
   return data;
+}
+
+
+export async function getExhibitionArtworks(id: string) {
+  const { data, error } = await supabaseAdmin
+    .from("exhibition_artworks")
+    .select(`
+      artworks (
+        *,
+        artwork_images (
+          url,
+          is_cover
+        )
+      )
+    `)
+    .eq("exhibition_id", id)
+    // Filter the joined images to only include the cover
+    .eq("artworks.artwork_images.is_cover", true);
+
+  if (error) {
+    console.error("Error fetching exhibition artworks:", error);
+    return [];
+  }
+  
+  // Flatten to include 'cover_url' and remove the raw 'artwork_images' array
+  return data.map((item: any) => {
+    const artwork = item.artworks;
+    return {
+      ...artwork,
+      cover_url: artwork.artwork_images?.[0]?.url || null,
+      artwork_images: undefined 
+    };
+  });
 }
 
 export async function createExhibitionAction(formData: FormData) {
@@ -123,9 +158,89 @@ if (artworkIds.length > 0) {
   }
 }
 
+// export async function updateExhibitionAction(formData: FormData, exhibitionId: string) {
+//   try {
+//     // 1. Fetch current exhibition to get the existing image URL for cleanup
+//     const { data: currentExh } = await supabaseAdmin
+//       .from('exhibitions')
+//       .select('cover_image')
+//       .eq('id', exhibitionId)
+//       .single();
+
+//     const newFile = formData.get('cover_image') as File;
+//     let finalImageUrl = currentExh?.cover_image;
+
+//     // 2. Handle Image Update
+//     if (newFile && newFile.size > 0) {
+//       // Optimize (using your Sharp/HEIC logic)
+//       const arrayBuffer = await newFile.arrayBuffer();
+//       const optimized = await sharp(Buffer.from(arrayBuffer))
+//         .resize(1600, 1600, { fit: 'inside', withoutEnlargement: true })
+//         .webp({ quality: 75 })
+//         .toBuffer();
+
+//       const key = `exhibitions/${exhibitionId}/${Date.now()}.webp`;
+
+//       // Upload New
+//       await r2.send(new PutObjectCommand({
+//         Bucket: process.env.R2_BUCKET_NAME,
+//         Key: key,
+//         Body: optimized,
+//         ContentType: 'image/webp',
+//       }));
+
+//       // Delete Old from R2 if it exists
+//       if (currentExh?.cover_image) {
+//         const oldKey = currentExh.cover_image.split(`${process.env.R2_PUBLIC_URL}/`)[1];
+//         if (oldKey) {
+//           await r2.send(new DeleteObjectCommand({
+//             Bucket: process.env.R2_BUCKET_NAME,
+//             Key: oldKey,
+//           }));
+//         }
+//       }
+//       finalImageUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
+//     }
+
+//     // 3. Update Exhibition Metadata
+//     const { error: updateError } = await supabaseAdmin
+//       .from('exhibitions')
+//       .update({
+//         name: formData.get('name'),
+//         description: formData.get('description'),
+//         public: formData.get('public') === 'true',
+//         private: formData.get('private') === 'true',
+//         onsite: formData.get('onsite') === 'true',
+//         cover_image: finalImageUrl,
+//       })
+//       .eq('id', exhibitionId);
+
+//     if (updateError) throw updateError;
+
+//     // 4. Sync Artworks (The Join Table)
+//     const artworkIds = JSON.parse(formData.get('artwork_ids') as string || "[]");
+
+//     // Clear existing and re-insert
+//     await supabaseAdmin.from('exhibition_artworks').delete().eq('exhibition_id', exhibitionId);
+    
+//     if (artworkIds.length > 0) {
+//       const joinData = artworkIds.map((artId: string) => ({
+//         exhibition_id: exhibitionId,
+//         artwork_id: artId,
+//       }));
+//       await supabaseAdmin.from('exhibition_artworks').insert(joinData);
+//     }
+
+//     return { success: true };
+//   } catch (err: any) {
+//     console.error("Exhibition Update Error:", err);
+//     return { error: err.message };
+//   }
+// }
+
 export async function updateExhibitionAction(formData: FormData, exhibitionId: string) {
   try {
-    // 1. Fetch current exhibition to get the existing image URL for cleanup
+    // 1. Fetch current record to get the OLD image URL
     const { data: currentExh } = await supabaseAdmin
       .from('exhibitions')
       .select('cover_image')
@@ -135,18 +250,16 @@ export async function updateExhibitionAction(formData: FormData, exhibitionId: s
     const newFile = formData.get('cover_image') as File;
     let finalImageUrl = currentExh?.cover_image;
 
-    // 2. Handle Image Update
+    // 2. Process NEW Image (if provided)
     if (newFile && newFile.size > 0) {
-      // Optimize (using your Sharp/HEIC logic)
-      const arrayBuffer = await newFile.arrayBuffer();
-      const optimized = await sharp(Buffer.from(arrayBuffer))
-        .resize(1600, 1600, { fit: 'inside', withoutEnlargement: true })
+      // ... Insert your Sharp/HEIC optimization logic here ...
+      const optimized = await sharp(Buffer.from(await newFile.arrayBuffer()))
         .webp({ quality: 75 })
         .toBuffer();
 
       const key = `exhibitions/${exhibitionId}/${Date.now()}.webp`;
 
-      // Upload New
+      // Upload New Image
       await r2.send(new PutObjectCommand({
         Bucket: process.env.R2_BUCKET_NAME,
         Key: key,
@@ -154,51 +267,29 @@ export async function updateExhibitionAction(formData: FormData, exhibitionId: s
         ContentType: 'image/webp',
       }));
 
-      // Delete Old from R2 if it exists
+      // 3. CLEANUP OLD IMAGE (The Cascade)
       if (currentExh?.cover_image) {
-        const oldKey = currentExh.cover_image.split(`${process.env.R2_PUBLIC_URL}/`)[1];
-        if (oldKey) {
+        const publicUrlBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, "");
+        const oldKey = currentExh.cover_image.replace(`${publicUrlBase}/`, "");
+
+        if (oldKey && oldKey !== currentExh.cover_image) {
           await r2.send(new DeleteObjectCommand({
             Bucket: process.env.R2_BUCKET_NAME,
             Key: oldKey,
           }));
         }
       }
+      
       finalImageUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
     }
 
-    // 3. Update Exhibition Metadata
-    const { error: updateError } = await supabaseAdmin
-      .from('exhibitions')
-      .update({
-        name: formData.get('name'),
-        description: formData.get('description'),
-        public: formData.get('public') === 'true',
-        private: formData.get('private') === 'true',
-        onsite: formData.get('onsite') === 'true',
-        cover_image: finalImageUrl,
-      })
-      .eq('id', exhibitionId);
-
-    if (updateError) throw updateError;
-
-    // 4. Sync Artworks (The Join Table)
-    const artworkIds = JSON.parse(formData.get('artwork_ids') as string || "[]");
-
-    // Clear existing and re-insert
-    await supabaseAdmin.from('exhibition_artworks').delete().eq('exhibition_id', exhibitionId);
-    
-    if (artworkIds.length > 0) {
-      const joinData = artworkIds.map((artId: string) => ({
-        exhibition_id: exhibitionId,
-        artwork_id: artId,
-      }));
-      await supabaseAdmin.from('exhibition_artworks').insert(joinData);
-    }
+    // 4. Update Metadata & Join Table
+    // ... update 'exhibitions' set cover_image = finalImageUrl ...
+    // ... delete and re-insert 'exhibition_artworks' ...
 
     return { success: true };
   } catch (err: any) {
-    console.error("Exhibition Update Error:", err);
+    console.error("Update Error:", err);
     return { error: err.message };
   }
 }

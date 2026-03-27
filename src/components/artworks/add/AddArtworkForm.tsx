@@ -78,7 +78,7 @@ export default function AddArtworkForm({
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
-      <Stack spacing={3} sx={{ maxWidth: 600, mx: "auto" }}>
+      <Stack spacing={3} sx={{ width: "100%", mx: "auto" }}>
         {/* Artist Selection */}
         <FormControl fullWidth required>
           <InputLabel id="artist-select-label">Artist</InputLabel>

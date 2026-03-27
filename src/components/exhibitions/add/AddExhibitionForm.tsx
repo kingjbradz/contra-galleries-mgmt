@@ -100,7 +100,7 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
-      <Stack spacing={3} sx={{ maxWidth: 600, mx: "auto", p: 2 }}>
+      <Stack spacing={3} >
         {error && <Alert severity="error">{error}</Alert>}
 
         <TextField name="name" label="Exhibition Name" required fullWidth />
@@ -189,8 +189,6 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
         <Typography variant="subtitle1" sx={{ mt: 3, mb: 1 }}>
           Select Artworks ({selectedArtworkIds.length})
         </Typography>
-
-
 
         <ModalButton
           label={

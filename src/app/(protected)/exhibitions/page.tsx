@@ -15,6 +15,23 @@ import ListPageActionRow from "@/components/ui/ListPageActionRow";
 import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
 import AddExhibitionForm from "@/components/exhibitions/add/AddExhibitionForm";
 
+interface ExhibitionArtwork {
+  exhibition_id: string;
+  artwork_id: string;
+}
+
+export interface Exhibition {
+  id: string;
+  name: string;
+  cover_image?: string;
+  description?: string;
+  onsite?: boolean;
+  public?: boolean;
+  private?: boolean;
+  artworks?: ExhibitionArtwork[]
+  error?: string;
+}
+
 export default async function ExhibitionsPage() {
   const exhibitions = await getExhibitions()
 

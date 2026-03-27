@@ -35,7 +35,7 @@ export default function AddArtistForm({ onSuccess }: Props) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Stack spacing={2}>
+      <Stack spacing={3}>
         <TextField
           label="Name"
           value={artist.name}
