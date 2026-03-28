@@ -19,7 +19,6 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import ModalButton from "@/components/ui/ModalButton";
 import ArtworkSelector from "@/components/ui/ArtworkSelector";
 
-
 interface ExhibitionFormProps {
   onSuccess?: () => void;
 }
@@ -100,7 +99,7 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
-      <Stack spacing={3} >
+      <Stack spacing={3}>
         {error && <Alert severity="error">{error}</Alert>}
 
         <TextField name="name" label="Exhibition Name" required fullWidth />
@@ -111,6 +110,19 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
           multiline
           rows={4}
           fullWidth
+        />
+
+        <TextField
+          name="slug"
+          label="URL path/'slug'"
+          placeholder="e.g. spring-collection-2026"
+          required
+          helperText={`This defines the URL: ${process.env.QRCODE_URL}/slug/artwork-slug`}
+          inputProps={{
+            // Browser-level validation for lowercase, numbers, and hyphens
+            pattern: "[a-z0-9-]+",
+            style: { textTransform: "lowercase" },
+          }}
         />
 
         {/* Visibility & Location Flags */}

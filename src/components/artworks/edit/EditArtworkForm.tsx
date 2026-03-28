@@ -50,6 +50,7 @@ export default function EditArtworkForm({
     info: artwork.info,
     price: artwork.price,
     signed: artwork.signed,
+    slug: artwork.slug,
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -172,6 +173,24 @@ export default function EditArtworkForm({
           name="dimensions"
           value={editedArtwork.dimensions || ""}
           required
+          onChange={(e) =>
+            setEditedArtwork({
+              ...artwork,
+              dimensions: e.target.value,
+            })
+          }
+        />
+        <TextField
+          name="slug"
+          label="URL path/'slug'"
+          value={editedArtwork.slug || ""}
+          required
+          helperText={`This defines the URL: ${process.env.QRCODE_URL}/slug/artwork-slug`}
+          inputProps={{
+            // Browser-level validation for lowercase, numbers, and hyphens
+            pattern: "[a-z0-9-]+",
+            style: { textTransform: 'lowercase' }
+          }}
           onChange={(e) =>
             setEditedArtwork({
               ...artwork,

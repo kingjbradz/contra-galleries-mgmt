@@ -122,12 +122,26 @@ export default function AddArtworkForm({
         />
 
         <TextField
+          name="slug"
+          label="URL path/'slug'"
+          placeholder="e.g. spring-collection-2026"
+          required
+          helperText={`This defines the URL: ${process.env.QRCODE_URL}/slug/artwork-slug`}
+          inputProps={{
+            // Browser-level validation for lowercase, numbers, and hyphens
+            pattern: "[a-z0-9-]+",
+            style: { textTransform: 'lowercase' }
+          }}
+        />
+
+        <TextField
           name="info"
           label="Artwork Description / Info"
           multiline
           rows={3}
           fullWidth
         />
+
 
         <FormControlLabel
           control={<Checkbox name="signed" value="true" />}

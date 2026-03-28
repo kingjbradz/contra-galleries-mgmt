@@ -102,6 +102,7 @@ export async function createArtworkAction(formData: FormData) {
         info: formData.get('info'),
         price: formData.get('price'),
         signed: formData.get('signed') === 'true',
+        slug: formData.get('slug')
       })
       .select().single();
 
@@ -181,6 +182,7 @@ export async function updateArtworkAction(formData: FormData, artworkId: string)
         info: formData.get('info'),
         price: formData.get('price'),
         signed: formData.get('signed') === 'true',
+        slug: formData.get('slug')
       })
       .eq('id', artworkId);
 

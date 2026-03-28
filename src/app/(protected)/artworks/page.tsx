@@ -34,6 +34,7 @@ export interface Artwork {
   dimensions?: string;
   artist_id?: string;
   error?: string;
+  slug?: string;
   artwork_images?: ArtworkImage[];
   artist_name?: string;
 }

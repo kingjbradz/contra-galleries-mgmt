@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Alert, FormControlLabel, Checkbox, TextField, Button, Stack, Typography, Box } from "@mui/material";
+import {
+  Alert,
+  FormControlLabel,
+  Checkbox,
+  TextField,
+  Button,
+  Stack,
+  Typography,
+  Box,
+} from "@mui/material";
 import { updateExhibitionAction } from "@/lib/exhibitionActions";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import ModalButton from "@/components/ui/ModalButton";
@@ -13,14 +22,18 @@ interface EditExhibitionFormProps {
   onSuccess?: () => void; // Injected by React.cloneElement in ActionButtons
 }
 
-export default function EditExhibitionForm({ exhibition, artworks, onSuccess }: EditExhibitionFormProps) {
+export default function EditExhibitionForm({
+  exhibition,
+  artworks,
+  onSuccess,
+}: EditExhibitionFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   // Initialize selected IDs from the exhibition's joined artworks
   const [selectedArtworkIds, setSelectedArtworkIds] = useState<string[]>(
-    artworks.map(a => a.id)
+    artworks.map((a) => a.id)
   );
 
   const {
@@ -32,7 +45,8 @@ export default function EditExhibitionForm({ exhibition, artworks, onSuccess }: 
   } = useImageUpload();
 
   // Determine if we show the existing R2 image or a new local preview
-  const currentPreview = previews.length > 0 ? previews[0] : exhibition.cover_image;
+  const currentPreview =
+    previews.length > 0 ? previews[0] : exhibition.cover_image;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -66,12 +80,12 @@ export default function EditExhibitionForm({ exhibition, artworks, onSuccess }: 
       <Stack spacing={3} sx={{ p: 1 }}>
         {error && <Alert severity="error">{error}</Alert>}
 
-        <TextField 
-          name="name" 
-          label="Exhibition Name" 
-          defaultValue={exhibition.name} 
-          required 
-          fullWidth 
+        <TextField
+          name="name"
+          label="Exhibition Name"
+          defaultValue={exhibition.name}
+          required
+          fullWidth
         />
 
         <TextField
@@ -83,34 +97,83 @@ export default function EditExhibitionForm({ exhibition, artworks, onSuccess }: 
           fullWidth
         />
 
+        <TextField
+          name="slug"
+          label="URL path/'slug'"
+          defaultValue={exhibition.slug}
+          required
+          helperText={`This defines the URL: ${process.env.QRCODE_URL}/slug/artwork-slug`}
+          inputProps={{
+            // Browser-level validation for lowercase, numbers, and hyphens
+            pattern: "[a-z0-9-]+",
+            style: { textTransform: "lowercase" },
+          }}
+        />
+
         <Stack direction="row" spacing={1} justifyContent="space-between">
           <FormControlLabel
-            control={<Checkbox name="public" value="true" defaultChecked={exhibition.public} />}
+            control={
+              <Checkbox
+                name="public"
+                value="true"
+                defaultChecked={exhibition.public}
+              />
+            }
             label="Public"
           />
           <FormControlLabel
-            control={<Checkbox name="private" value="true" defaultChecked={exhibition.private} />}
+            control={
+              <Checkbox
+                name="private"
+                value="true"
+                defaultChecked={exhibition.private}
+              />
+            }
             label="Private"
           />
           <FormControlLabel
-            control={<Checkbox name="onsite" value="true" defaultChecked={exhibition.onsite} />}
+            control={
+              <Checkbox
+                name="onsite"
+                value="true"
+                defaultChecked={exhibition.onsite}
+              />
+            }
             label="Onsite"
           />
         </Stack>
 
         {/* Cover Image Area */}
-        <Box sx={{ p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
-          <Typography variant="subtitle2" gutterBottom>Cover Image</Typography>
+        <Box
+          sx={{
+            p: 2,
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="subtitle2" gutterBottom>
+            Cover Image
+          </Typography>
           {currentPreview ? (
             <Box sx={{ position: "relative" }}>
-              <img src={currentPreview} alt="Preview" style={{ width: "100%", maxHeight: 200, objectFit: "cover", borderRadius: 4 }} />
-              <Button 
+              <img
+                src={currentPreview}
+                alt="Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: 200,
+                  objectFit: "cover",
+                  borderRadius: 4,
+                }}
+              />
+              <Button
                 onClick={() => {
-                  // If we're removing a new file, it clears 'previews'. 
+                  // If we're removing a new file, it clears 'previews'.
                   // If we're "removing" the old image, you might want a different logic,
                   // but for now, let's allow replacing it via the upload button.
                   if (previews.length > 0) removeImage(0);
-                }} 
+                }}
                 sx={{ display: previews.length > 0 ? "block" : "none" }}
               >
                 Remove New Upload
@@ -119,7 +182,13 @@ export default function EditExhibitionForm({ exhibition, artworks, onSuccess }: 
           ) : null}
           <Button variant="outlined" component="label" sx={{ mt: 1 }}>
             {currentPreview ? "Replace Image" : "Upload Image"}
-            <input type="file" name="cover_image" hidden accept="image/*" onChange={handleFileChange} />
+            <input
+              type="file"
+              name="cover_image"
+              hidden
+              accept="image/*"
+              onChange={handleFileChange}
+            />
           </Button>
         </Box>
 

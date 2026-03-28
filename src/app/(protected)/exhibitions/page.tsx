@@ -28,6 +28,7 @@ export interface Exhibition {
   onsite?: boolean;
   public?: boolean;
   private?: boolean;
+  slug?: string;
   artworks?: ExhibitionArtwork[]
   error?: string;
 }
