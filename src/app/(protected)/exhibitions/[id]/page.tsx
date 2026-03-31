@@ -13,6 +13,7 @@ import EditExhibitionForm from "@/components/exhibitions/edit/EditExhibitionForm
 import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
 import NotFoundComponent from "@/components/ui/NotFoundComponent";
 import ArtworkCard from "@/components/ui/ArtworkCard";
+import { DownloadPDFButton } from "@/components/labels/DownloadPDFButton";
 
 export default async function ExhibitionPage({
   params,
@@ -42,6 +43,7 @@ export default async function ExhibitionPage({
             deleteAction={deleteExhibitionAction.bind(null, exhibition.id!)}
             redirectPath="/exhibitions"
             editForm={<EditExhibitionForm exhibition={exhibition} artworks={artworks} />}
+            extraComponent={<DownloadPDFButton exhibitionId={exhibition.id} exhibitionName={exhibition.name} />}
           />
           <Grid
             size={{ xs: 12 }}
