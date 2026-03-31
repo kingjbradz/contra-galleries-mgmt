@@ -1,16 +1,12 @@
 // import QRCodeImage from "./QRCodeImage";
 import { Artwork } from "@/app/(protected)/artworks/page";
-import React, { Suspense, lazy } from 'react';
 
 interface ArtworkLabelProps {
   artwork: Artwork;
-  exhibitionSlug: string;
   staticQr?: string;
 }
 
-const QRCodeImage = lazy(() => import('@/lib/QRCodeImage'));
-
-export default function ArtworkLabel({ artwork, exhibitionSlug, staticQr }: ArtworkLabelProps) {
+export default function ArtworkLabel({ artwork, staticQr }: ArtworkLabelProps) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px', width: '70mm', breakInside: 'avoid' }}>
       

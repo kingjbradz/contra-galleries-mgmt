@@ -43,7 +43,7 @@ export default async function ExhibitionPage({
             deleteAction={deleteExhibitionAction.bind(null, exhibition.id!)}
             redirectPath="/exhibitions"
             editForm={<EditExhibitionForm exhibition={exhibition} artworks={artworks} />}
-            extraComponent={<DownloadPDFButton exhibitionId={exhibition.id} exhibitionName={exhibition.name} />}
+            extraComponent={<DownloadPDFButton type="exhibition" id={exhibition.id} name={exhibition.name} />}
           />
           <Grid
             size={{ xs: 12 }}

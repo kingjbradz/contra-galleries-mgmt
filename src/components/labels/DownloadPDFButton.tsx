@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { Button } from '@mui/material';
 
-export function DownloadPDFButton({ exhibitionId, exhibitionName }: { exhibitionId: string, exhibitionName: string }) {
+export function DownloadPDFButton({ type, id, name }: { type: string, id: string, name: string }) {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleDownload = async () => {
     setIsGenerating(true);
     try {
       // 1. Call the API Route we built
-      const response = await fetch(`/api/exhibitions/${exhibitionId}/pdf`);
+      const response = await fetch(`/api/${type}s/${id}/pdf`);
       
       if (!response.ok) throw new Error('PDF generation failed');
 
@@ -22,7 +22,7 @@ export function DownloadPDFButton({ exhibitionId, exhibitionName }: { exhibition
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = `Labels-${exhibitionName.replace(/\s+/g, '-')}.pdf`;
+      a.download = `${name.replace(/\s+/g, '-')}-labels.pdf`;
       
       document.body.appendChild(a);
       a.click();

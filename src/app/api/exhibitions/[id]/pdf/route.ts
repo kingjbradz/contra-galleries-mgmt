@@ -47,7 +47,6 @@ export async function GET(
           React.createElement(ArtworkLabel, {
             key: art.id,
             artwork: art,
-            exhibitionSlug: exhibition.slug,
             staticQr: art.qrCodeUrl // This is the magic key
           })
         )
