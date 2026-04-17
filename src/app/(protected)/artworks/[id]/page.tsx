@@ -6,7 +6,6 @@ import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Link from "next/link";
 import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
 import NotFoundComponent from "@/components/ui/NotFoundComponent";
-import QRCodeImage from "@/lib/QRCodeImage"
 
 const italicStyles = {
   fontStyle: "italic"
@@ -94,10 +93,6 @@ export default async function ArtworkPage({
               );
             })}
           </Grid>
-          <QRCodeImage 
-            exhibitionSlug="exhibition"
-            artworkSlug={artwork?.slug}
-            />
         </>
       )}
     </Grid>
