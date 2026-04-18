@@ -16,12 +16,42 @@ export async function GET(request: Request) {
   try {
     const { data, error } = await supabaseAdmin
       .from("exhibitions")
-      .select("id, name, slug, description")
+      .select(`
+        id,
+        name,
+        slug,
+        description,
+        exhibition_artworks (
+          artwork_id,
+          artworks (
+            id,
+            title,
+            slug,
+            info,
+            year,
+            signed,
+            material,
+            dimensions,
+            artist_name,
+            artwork_images (
+              id,
+              url,
+              is_cover
+            )
+          )
+        )
+      `) // join exhibition artworks and then artwork images
       .eq(environment, true);
 
     if (error) throw error;
 
-    return NextResponse.json({ exhibitions: data });
+    const flattened = data.map(exhibition => ({
+      ...exhibition,
+      artworks: exhibition.exhibition_artworks.map(ea => ea.artworks),
+      exhibition_artworks: undefined
+    }));
+
+    return NextResponse.json({ exhibitions: flattened });
   } catch (err) {
     return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
