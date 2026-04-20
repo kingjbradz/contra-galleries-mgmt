@@ -13,10 +13,10 @@ export default function ArtworkLabel({ artwork, staticQr }: ArtworkLabelProps) {
       {/* Left Column: Artwork Info */}
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <p style={{ fontSize: '15.5px', fontWeight: 'bold', margin: '0 0 1mm 0' }}>
-          {artwork.title}
+          {artwork.title ? artwork.title : "Untitled"}
         </p>
         <p style={{ fontSize: '12.5px', fontStyle: 'italic', margin: '0 0 1mm 0' }}>
-          {artwork.artist_name}, {artwork.year}
+          {artwork.artist_name ? artwork.artist_name : "Unknown Artist"}, {artwork.year}
         </p>
         <p style={{ fontSize: '12.5px', margin: '0 0 1mm 0' }}>
           {artwork.material}

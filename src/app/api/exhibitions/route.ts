@@ -21,6 +21,7 @@ export async function GET(request: Request) {
         name,
         slug,
         description,
+        cover_image,
         exhibition_artworks (
           artwork_id,
           artworks (
