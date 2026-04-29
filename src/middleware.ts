@@ -25,6 +25,7 @@ export function middleware(req: NextRequest) {
       return new NextResponse(null, { status: 204, headers: response.headers });
     }
 
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
     return response;
   }
 
@@ -44,7 +45,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  return response;
 }
 
 export const config = {
