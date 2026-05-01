@@ -1,4 +1,5 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { supabase } from '@/lib/supabaseClient';
 import ArtworkLabel from '@/lib/ArtworkLabel';
 import React from 'react';
@@ -53,7 +54,13 @@ export async function GET(
       )
     );
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await (process.env.AWS_EXECUTION_ENV
+      ? puppeteer.launch({
+          args: chromium.args,
+          executablePath: await chromium.executablePath(),
+        })
+      : (await import('puppeteer')).launch()
+    );
     const page = await browser.newPage();
 
     await page.setContent(`

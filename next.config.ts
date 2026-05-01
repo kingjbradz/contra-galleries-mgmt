@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '100mb',
     },
+    serverComponentsExternalPackages: ['@sparticuz/chromium', 'puppeteer-core'],
   },
   async headers() {
     return [
