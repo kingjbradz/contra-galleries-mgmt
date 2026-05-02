@@ -57,7 +57,9 @@ export async function GET(
     const browser = await (process.env.AWS_EXECUTION_ENV
       ? puppeteer.launch({
           args: chromium.args,
-          executablePath: await chromium.executablePath(),
+          executablePath: await chromium.executablePath(
+            'https://github.com/Sparticuz/chromium/releases/download/v148.0.0/chromium-v148.0.0-pack.x64.tar'
+          ),
         })
       : (await import('puppeteer')).launch()
     );
