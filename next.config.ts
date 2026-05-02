@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config) => {
+    config.externals = [...(config.externals || []), '@sparticuz/chromium'];
+    return config;
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: '100mb',
