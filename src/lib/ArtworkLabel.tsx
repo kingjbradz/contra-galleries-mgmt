@@ -1,9 +1,10 @@
 // import QRCodeImage from "./QRCodeImage";
 import { Artwork } from "@/app/(protected)/artworks/page";
+import Image from "next/image";
 
 interface ArtworkLabelProps {
   artwork: Artwork;
-  staticQr?: string;
+  staticQr?: string ;
 }
 
 export default function ArtworkLabel({ artwork, staticQr }: ArtworkLabelProps) {
@@ -27,11 +28,11 @@ export default function ArtworkLabel({ artwork, staticQr }: ArtworkLabelProps) {
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <div style={{ width: '60px', height: '60px' }}>
     
-          <img 
+          {staticQr && <Image 
             src={staticQr} 
             style={{ width: '60px', height: '60px' }} 
             alt="QR" 
-          />
+          />}
        
         </div>
       </div>

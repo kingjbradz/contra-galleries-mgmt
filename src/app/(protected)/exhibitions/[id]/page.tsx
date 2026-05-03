@@ -14,6 +14,7 @@ import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
 import NotFoundComponent from "@/components/ui/NotFoundComponent";
 import ArtworkCard from "@/components/ui/ArtworkCard";
 import { DownloadPDFButton } from "@/components/labels/DownloadPDFButton";
+import Image from "next/image";
 
 export default async function ExhibitionPage({
   params,
@@ -50,13 +51,14 @@ export default async function ExhibitionPage({
             sx={{ display: "flex", justifyContent: "space-evenly" }}
           >
             {exhibition?.cover_image ? (
-              <img
+              <Image
+                alt="image"
                 src={exhibition?.cover_image}
                 style={{
                   height: 300,
                   width: 300,
                 }}
-              ></img>
+              ></Image>
             ) : (
               <Typography>No Cover Image</Typography>
             )}

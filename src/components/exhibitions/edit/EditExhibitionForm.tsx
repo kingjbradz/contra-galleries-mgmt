@@ -11,6 +11,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import Image from "next/image";
 import { updateExhibitionAction } from "@/lib/exhibitionActions";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import ModalButton from "@/components/ui/ModalButton";
@@ -157,7 +158,7 @@ export default function EditExhibitionForm({
           </Typography>
           {currentPreview ? (
             <Box sx={{ position: "relative" }}>
-              <img
+              <Image
                 src={currentPreview}
                 alt="Preview"
                 style={{

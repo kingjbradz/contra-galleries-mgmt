@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, ChangeEvent } from 'react';
 import heic2any from 'heic2any';
 
 export function useImageUpload(initialRemoteUrls: string[] = []) {

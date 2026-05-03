@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import {
-  Alert,
   FormControlLabel,
   Checkbox,
   TextField,
@@ -17,7 +16,7 @@ import {
 } from "@mui/material";
 // Client-side client for fetching dropdown data
 import { supabase } from "@/lib/supabaseClient";
-// Our Server Action logic
+import Image from "next/image";
 import { createArtworkAction } from "@/lib/artworkActions";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
@@ -186,7 +185,7 @@ export default function AddArtworkForm({
                 const url = previews[index];
                 return (
                   <Box key={url} sx={{ position: "relative", flexShrink: 0 }}>
-                    <img
+                    <Image
                       src={url}
                       alt="Preview"
                       style={{

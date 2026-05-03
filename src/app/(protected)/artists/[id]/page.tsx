@@ -3,10 +3,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
   Grid,
   Typography,
 } from "@mui/material";
@@ -16,7 +12,6 @@ import { getArtist } from "@/lib/artistActions";
 import EditArtistForm from "@/components/artists/edit/EditArtistForm";
 import { deleteArtistAction } from "@/lib/artistActions";
 import { getArtworksByArtist } from "@/lib/artworkActions";
-import NextLink from "next/link";
 import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
 import NotFoundComponent from "@/components/ui/NotFoundComponent";
 import ArtworkCard from "@/components/ui/ArtworkCard";

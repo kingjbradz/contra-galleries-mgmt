@@ -6,6 +6,7 @@ import EditArtworkForm from "@/components/artworks/edit/EditArtworkForm";
 import Link from "next/link";
 import IndividualPageActionRow from "@/components/ui/IndividualPageActionRow";
 import NotFoundComponent from "@/components/ui/NotFoundComponent";
+import Image from 'next/image';
 
 const italicStyles = {
   fontStyle: "italic"
@@ -81,7 +82,8 @@ export default async function ArtworkPage({
           >
             {artwork.artwork_images?.map((image) => {
               return (
-                <img
+                <Image
+                  alt="image"
                   key={image.id}
                   src={image.url}
                   style={{
@@ -89,7 +91,7 @@ export default async function ArtworkPage({
                     width: 300,
                     border: image.is_cover === true ? "3px solid green" : "",
                   }}
-                ></img>
+                ></Image>
               );
             })}
           </Grid>

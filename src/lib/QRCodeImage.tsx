@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
+import Image from 'next/image';
 
 interface QRCodeImageProps {
   exhibitionSlug?: string;
@@ -32,7 +33,7 @@ export default function QRCodeImage({ exhibitionSlug, artworkSlug }: QRCodeImage
   if (!src) return null; // Or a small skeleton loader
 
   return (
-    <img 
+    <Image 
       src={src} 
       alt={`QR Code for ${artworkSlug}`} 
       style={{ width: '100%', maxWidth: '300px', display: 'block' }} 

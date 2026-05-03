@@ -16,6 +16,7 @@ import { Artwork, ArtworkImage } from "@/app/(protected)/artworks/page";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { updateArtworkAction } from "@/lib/artworkActions";
 import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
 
 interface EditArtworkFormProps {
   artwork: Artwork;
@@ -264,7 +265,7 @@ export default function EditArtworkForm({
     */}
             {previews.map((url, index) => (
               <Box key={url} sx={{ position: "relative", flexShrink: 0 }}>
-                <img
+                <Image
                   src={url}
                   alt="Preview"
                   style={{

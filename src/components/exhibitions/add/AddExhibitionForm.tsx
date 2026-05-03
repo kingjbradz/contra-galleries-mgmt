@@ -11,9 +11,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-// Client-side client for fetching dropdown data
 import { supabase } from "@/lib/supabaseClient";
-// Our Server Action logic
+import Image from "next/image";
 import { createExhibitionAction } from "@/lib/exhibitionActions";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import ModalButton from "@/components/ui/ModalButton";
@@ -42,11 +41,11 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
     loadArtworks();
   }, []);
 
-  const toggleArtwork = (id: string) => {
-    setSelectedArtworkIds((prev) =>
-      prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
-    );
-  };
+  // const toggleArtwork = (id: string) => {
+  //   setSelectedArtworkIds((prev) =>
+  //     prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
+  //   );
+  // };
 
   // Reuse your established hook pattern
   const {
@@ -169,7 +168,7 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
             </Button>
           ) : (
             <Box sx={{ position: "relative", display: "inline-block" }}>
-              <img
+              <Image
                 src={previews[0]}
                 alt="Preview"
                 style={{
