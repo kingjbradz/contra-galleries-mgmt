@@ -4,6 +4,9 @@ import { supabase } from '@/lib/supabaseClient';
 import ArtworkLabel from '@/lib/ArtworkLabel';
 import React from 'react';
 import QRCode from 'qrcode'; // Using your existing install
+import { Artwork } from '@/app/(protected)/artworks/page';
+
+type ArtworkWithQR = Artwork & { qrCodeUrl: string };
 
 export async function GET(
   req: Request, 
@@ -23,7 +26,7 @@ export async function GET(
 
     // 1. Generate the QR codes as Base64 strings (Data URIs)
     const artworksWithQRs = await Promise.all(
-      exhibition.artworks.map(async (art: any) => {
+      exhibition.artworks.map(async (art: Artwork) => {
         const url = `${process.env.NEXT_PUBLIC_QRCODE_URL}/${exhibition.slug}/${art.slug}`;
         // Generate a high-quality 300dpi-ish QR code string
         const qrBase64 = await QRCode.toDataURL(url, { margin: 0, scale: 4 });
@@ -44,7 +47,7 @@ export async function GET(
           backgroundColor: '#fff'
         }
       }, 
-        artworksWithQRs.map((art: any) => 
+        artworksWithQRs.map((art: ArtworkWithQR) => 
           React.createElement(ArtworkLabel, {
             key: art.id,
             artwork: art,

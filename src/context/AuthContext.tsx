@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import toErrorMessage from "@/lib/toErrorMessage";
 
 export type ActionResult = { error: string | null };
 
@@ -38,8 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (err) {
         setUser(null);
-        const error = err instanceof Error ? err : new Error("setUser error.")
-        return { error: error.message };
+        return { error: toErrorMessage(err, "setUser error.") };
       } finally {
         if (mounted) setLoading(false);
       }
@@ -57,8 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await fetch("/api/logout", { method: "POST" });
       return { error: null };
     } catch (err) {
-    const error = err instanceof Error ? err : new Error("Logout error.")
-    return { error: error.message };
+    return { error: toErrorMessage(err, "Logout error.") };
     } finally {
       setUser(null);
     }

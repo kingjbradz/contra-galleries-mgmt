@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { r2 } from './r2Client';
 import { supabaseAdmin } from '@/lib/supabaseAdmin'; 
+import toErrorMessage from './toErrorMessage';
 
 export async function getArtworks() {
   const { data, error } = await supabaseAdmin
@@ -161,9 +162,8 @@ export async function createArtworkAction(formData: FormData) {
     if (imgError) throw imgError;
 
     return { success: true };
-  } catch (err: any) {
-    console.error("Detailed Upload Error:", err);
-    return { error: err.message || "An unknown error occurred during upload." };
+  } catch (err) {
+    return { error: toErrorMessage(err, "An unknown error occurred during upload.") };
   }
 }
 
@@ -291,9 +291,8 @@ export async function updateArtworkAction(formData: FormData, artworkId: string)
     }
 
     return { success: true };
-  } catch (err: any) {
-    console.error("Update Error:", err);
-    return { error: err.message || "An error occurred while updating the artwork." };
+  } catch (err) {
+    return { error: toErrorMessage(err, "An error occurred while updating the artwork.") };
   }
 }
 
@@ -330,8 +329,7 @@ export async function deleteArtworkAction(artworkId: string) {
     }
 
     return { success: true };
-  } catch (err: any) {
-    console.error("Delete Error:", err);
-    return { error: err.message };
+  } catch (err) {
+    return { error: toErrorMessage(err, "Delete error") };
   }
 }

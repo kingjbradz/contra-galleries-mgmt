@@ -34,7 +34,7 @@ export default function ListPageActionRow({
       <ModalButton label={label} title={title}>
       {(close) => (
           // We clone the element to pass the close/onSuccess props automatically
-          React.cloneElement(form as React.ReactElement<any>, {
+          React.cloneElement(form as React.ReactElement<Record<string, unknown>>, {
             onSuccess: () => {
               close();
               router.refresh()

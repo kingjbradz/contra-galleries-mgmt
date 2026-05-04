@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { supabase } from "@/lib/supabaseClient";
+import { Artwork } from "@/app/(protected)/artworks/page";
 
 interface ArtworkSelectorProps {
   initialSelectedIds: string[];
@@ -20,7 +21,7 @@ export default function ArtworkSelector({ initialSelectedIds, onConfirm }: Artwo
   const [stagedIds, setStagedIds] = useState<string[]>(initialSelectedIds);
   
   // 2. Data & Search state
-  const [artworks, setArtworks] = useState<any[]>([]);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -48,7 +49,7 @@ export default function ArtworkSelector({ initialSelectedIds, onConfirm }: Artwo
       }
 
       const { data } = await query;
-      if (data) setArtworks(data);
+      if (data) setArtworks(data as unknown as Artwork[]);
       setLoading(false);
     };
 
@@ -92,7 +93,7 @@ export default function ArtworkSelector({ initialSelectedIds, onConfirm }: Artwo
           </TableHead>
           <TableBody>
             {artworks.map((art) => {
-              const isSelected = stagedIds.includes(art.id);
+              const isSelected = stagedIds.includes(art.id ?? "");
               const imgUrl = art.artwork_images?.[0]?.url;
 
               return (
@@ -100,7 +101,7 @@ export default function ArtworkSelector({ initialSelectedIds, onConfirm }: Artwo
                   key={art.id} 
                   hover 
                   selected={isSelected}
-                  onClick={() => handleToggle(art.id)}
+                  onClick={() => handleToggle(art.id ?? "")}
                   sx={{ cursor: "pointer" }}
                 >
                   <TableCell padding="checkbox">

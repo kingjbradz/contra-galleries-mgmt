@@ -11,6 +11,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { Exhibition } from "@/app/(protected)/exhibitions/page";
+import { Artwork } from "@/app/(protected)/artworks/page";
 import Image from "next/image";
 import { updateExhibitionAction } from "@/lib/exhibitionActions";
 import { useImageUpload } from "@/hooks/useImageUpload";
@@ -18,8 +20,8 @@ import ModalButton from "@/components/ui/ModalButton";
 import ArtworkSelector from "@/components/ui/ArtworkSelector";
 
 interface EditExhibitionFormProps {
-  exhibition: any; // The hydrated exhibition object from the parent
-  artworks: any[];
+  exhibition: Exhibition; // The hydrated exhibition object from the parent
+  artworks: Artwork[];
   onSuccess?: () => void; // Injected by React.cloneElement in ActionButtons
 }
 

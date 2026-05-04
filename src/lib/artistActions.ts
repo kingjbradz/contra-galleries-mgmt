@@ -4,6 +4,7 @@ import { supabaseAdmin } from './supabaseAdmin';
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { r2 } from './r2Client'; 
 import { revalidatePath } from 'next/cache';
+import toErrorMessage from './toErrorMessage';
 
 export async function getArtists() {
   const { data, error } = await supabaseAdmin
@@ -49,9 +50,8 @@ export async function createArtistAction(artistData: {
 
     revalidatePath('/artists'); // Clears cache for the artists list
     return { success: true, data };
-  } catch (err: any) {
-    console.error("Create Artist Error:", err);
-    return { error: err.message || "Failed to create artist" };
+  } catch (err) {
+    return { error: toErrorMessage(err, "Failed to create artist.") };
   }
 }
 
@@ -72,9 +72,8 @@ export async function updateArtistAction(id: string, artistData: {
     revalidatePath('/artists');
 
     return { success: true, data };
-  } catch (err: any) {
-    console.error("Update Artist Error:", err);
-    return { error: err.message || "Failed to update artist" };
+  } catch (err) {
+    return { error: toErrorMessage(err, "Failed to update artist.") };
   }
 }
 export async function deleteArtistAction(artistId: string) {
@@ -123,8 +122,7 @@ export async function deleteArtistAction(artistId: string) {
     revalidatePath('/artists');
     return { success: true };
     
-  } catch (err: any) {
-    console.error("Deep Delete Artist Error:", err);
-    return { error: err.message || "Failed to fully delete artist and associated data" };
+  } catch (err) {
+    return { error: toErrorMessage(err, "Failed to fully delete artist and associated data") };
   }
 }

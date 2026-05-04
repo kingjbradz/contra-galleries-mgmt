@@ -8,6 +8,7 @@ import { supabaseAdmin } from './supabaseAdmin';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { revalidatePath } from 'next/cache';
 import { Artwork } from '@/app/(protected)/artworks/page';
+import toErrorMessage from './toErrorMessage';
 
 type ExhibitionArtworkItem = {
   artworks: Artwork | null;
@@ -160,9 +161,7 @@ if (artworkIds.length > 0) {
     revalidatePath('/exhibitions');
     return { success: true, data: exhibition };
   } catch (err) {
-    console.error("Exhibition Create Error:", err);
-    const error = err instanceof Error ? err : new Error("Failed to create exhibition.")
-    return { error: error.message || "An unknown error occurred during upload." };
+    return { error: toErrorMessage(err, "Failed to create exhibition.") };
   }
 }
 
@@ -243,9 +242,7 @@ export async function updateExhibitionAction(formData: FormData, exhibitionId: s
 
     return { success: true };
   } catch (err) {
-    console.error("Exhibition Update Error:", err);
-    const error = err instanceof Error ? err : new Error("Failed to update exhibition.")
-    return { error: error.message };
+    return { error: toErrorMessage(err, "Failed to update exhibition.") };
   }
 }
 
@@ -295,8 +292,6 @@ export async function deleteExhibitionAction(exhibitionId: string) {
 
     return { success: true };
   } catch (err) {
-    console.error("Exhibition Delete Error:", err);
-    const error = err instanceof Error ? err : new Error("Failed to delete exhibition.")
-    return { error: error.message || "Failed to delete exhibition." };
+    return { error: toErrorMessage(err, "Failed to delete exhibition.") };
   }
 }
