@@ -32,9 +32,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // eslint: {
-  //   ignoreDuringBuilds: true, // TODO: remove and fix linting errors
-  // },
 };
 
 export default nextConfig;
