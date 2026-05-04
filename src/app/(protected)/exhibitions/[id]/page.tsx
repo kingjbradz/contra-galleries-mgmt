@@ -29,6 +29,7 @@ export default async function ExhibitionPage({
     return <NotFoundComponent type="exhibition" back="/exhibitions" />;
   }
 
+  console.log("artworks:",artworks)
   return (
     <Grid container spacing={3} padding={2}>
       {exhibition.error ? (
@@ -53,11 +54,9 @@ export default async function ExhibitionPage({
             {exhibition?.cover_image ? (
               <Image
                 alt="image"
+                height={300}
+                width={300}
                 src={exhibition?.cover_image}
-                style={{
-                  height: 300,
-                  width: 300,
-                }}
               ></Image>
             ) : (
               <Typography>No Cover Image</Typography>
@@ -111,7 +110,7 @@ export default async function ExhibitionPage({
             sx={{ display: "flex", justifyContent: "space-evenly" }}
           >
           {artworks.map((artwork) => 
-              <ArtworkCard key={artwork} artwork={artwork} includeArtistName />
+              <ArtworkCard key={artwork.id} artwork={artwork} includeArtistName />
             )}
           </Grid>
         </>

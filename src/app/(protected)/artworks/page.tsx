@@ -25,7 +25,7 @@ export interface ArtworkImage {
 
 export interface Artwork {
   id?: string;
-  title: string;
+  title?: string;
   info?: string;
   year?: string;
   price?: string;

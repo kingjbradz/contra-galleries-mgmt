@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: `${process.env.R2_BUCKET_NAME}`
+        hostname: `${new URL(process.env.R2_PUBLIC_URL!).hostname}`
       },
     ],
   },

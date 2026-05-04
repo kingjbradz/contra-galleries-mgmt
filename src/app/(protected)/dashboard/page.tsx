@@ -10,13 +10,12 @@ import {
   Button,
   Skeleton
 } from "@mui/material";
-import { usePageHeader } from "@/context/page-header/PageHeaderContext";
 import Progress from "@/components/ui/Progress";
+import { PageHeaderSetter } from "@/context/page-header/PageHeaderSetter";
 
 export default function DashboardPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
-  const { setPageHeader } = usePageHeader();
   const [loadingStatus, setLoadingStatus] = useState(true)
   const [stats, setStats] = useState({
     artists: 0,
@@ -37,7 +36,6 @@ export default function DashboardPage() {
     }
 
     loadStats();
-    setPageHeader({ title: "Dashboard" });
   }, []);
 
   if (loading) return <Progress />;
@@ -101,6 +99,7 @@ export default function DashboardPage() {
 
   return (
     <>
+      <PageHeaderSetter title="Dashboard" />
       <Typography variant="h4" gutterBottom>
         Logged In As: {capitalized(user.username)} ({user.role})
       </Typography>

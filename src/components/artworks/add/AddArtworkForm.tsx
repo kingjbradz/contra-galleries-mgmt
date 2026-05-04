@@ -125,7 +125,7 @@ export default function AddArtworkForm({
           label="URL path/'slug'"
           placeholder="e.g. spring-collection-2026"
           required
-          helperText={`This defines the URL: ${process.env.QRCODE_URL}/slug/artwork-slug`}
+          helperText={`URL looks like: ${process.env.NEXT_PUBLIC_QRCODE_URL}/exhibition-name/artwork-name`}
           inputProps={{
             // Browser-level validation for lowercase, numbers, and hyphens
             pattern: "[a-z0-9-]+",
@@ -188,9 +188,9 @@ export default function AddArtworkForm({
                     <Image
                       src={url}
                       alt="Preview"
+                      height={120}
+                      width={120}
                       style={{
-                        width: 120,
-                        height: 120,
                         objectFit: "cover",
                         borderRadius: 8,
                         border:

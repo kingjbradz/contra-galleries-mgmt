@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-  Alert,
   Box,
   Checkbox,
   Select,
@@ -12,7 +11,7 @@ import {
   Button,
   Stack,
 } from "@mui/material";
-import { Artwork, ArtworkImage } from "@/app/(protected)/artworks/page";
+import { Artwork } from "@/app/(protected)/artworks/page";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { updateArtworkAction } from "@/lib/artworkActions";
 import { supabase } from "@/lib/supabaseClient";
@@ -36,7 +35,7 @@ export default function EditArtworkForm({
     makeCover,
   } = useImageUpload(
     // We map the objects to strings and sort so the cover is first in the UI
-    artwork?.artwork_images?.sort((a, b) => (a.is_cover ? -1 : 1)).map((img) => img.url)
+    artwork?.artwork_images?.sort((a) => (a.is_cover ? -1 : 1)).map((img) => img.url)
   );
 
 
@@ -186,7 +185,7 @@ export default function EditArtworkForm({
           label="URL path/'slug'"
           value={editedArtwork.slug || ""}
           required
-          helperText={`This defines the URL: ${process.env.QRCODE_URL}/slug/artwork-slug`}
+          helperText={`URL looks like: ${process.env.NEXT_PUBLIC_QRCODE_URL}/exhibition-name/${editedArtwork.slug}`}
           inputProps={{
             // Browser-level validation for lowercase, numbers, and hyphens
             pattern: "[a-z0-9-]+",
@@ -266,11 +265,11 @@ export default function EditArtworkForm({
             {previews.map((url, index) => (
               <Box key={url} sx={{ position: "relative", flexShrink: 0 }}>
                 <Image
+                  width={120}
+                  height={120}
                   src={url}
                   alt="Preview"
                   style={{
-                    width: 120,
-                    height: 120,
                     objectFit: "cover",
                     borderRadius: 8,
                     border:

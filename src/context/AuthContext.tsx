@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+export type ActionResult = { error: string | null };
+
 type User = {
   id: string;
   username: string;
@@ -12,7 +14,7 @@ type AuthContextState = {
   user: User | null;
   loading: boolean;
   setUser: (u: User | null) => void;
-  logout: () => Promise<void>;
+  logout: () => Promise<ActionResult>
 };
 
 const AuthContext = createContext<AuthContextState | undefined>(undefined);
@@ -36,6 +38,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (err) {
         setUser(null);
+        const error = err instanceof Error ? err : new Error("setUser error.")
+        return { error: error.message };
       } finally {
         if (mounted) setLoading(false);
       }
@@ -48,11 +52,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  async function logout() {
+  async function logout(): Promise<ActionResult>  {
     try {
       await fetch("/api/logout", { method: "POST" });
+      return { error: null };
     } catch (err) {
-      // ignore
+    const error = err instanceof Error ? err : new Error("Logout error.")
+    return { error: error.message };
     } finally {
       setUser(null);
     }

@@ -20,6 +20,7 @@ export async function GET() {
       exhibitions: exhibitionsRes.count
     });
   } catch (err) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    const error = err instanceof Error ? err : new Error("Failed to update exhibition.")
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }

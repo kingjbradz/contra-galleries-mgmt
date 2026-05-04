@@ -103,7 +103,7 @@ export default function EditExhibitionForm({
           label="URL path/'slug'"
           defaultValue={exhibition.slug}
           required
-          helperText={`This defines the URL: ${process.env.QRCODE_URL}/slug/artwork-slug`}
+          helperText={`URL looks like: ${process.env.NEXT_PUBLIC_QRCODE_URL}/${exhibition.slug}/artwork-name`}
           inputProps={{
             // Browser-level validation for lowercase, numbers, and hyphens
             pattern: "[a-z0-9-]+",
@@ -157,13 +157,12 @@ export default function EditExhibitionForm({
             Cover Image
           </Typography>
           {currentPreview ? (
-            <Box sx={{ position: "relative" }}>
+            <Box sx={{ position: "relative", width: "100%", height: 250 }}>
               <Image
                 src={currentPreview}
                 alt="Preview"
+                fill
                 style={{
-                  width: "100%",
-                  maxHeight: 200,
                   objectFit: "cover",
                   borderRadius: 4,
                 }}

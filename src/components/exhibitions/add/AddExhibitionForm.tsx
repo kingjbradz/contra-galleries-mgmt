@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   Alert,
   FormControlLabel,
@@ -11,7 +11,6 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
 import { createExhibitionAction } from "@/lib/exhibitionActions";
 import { useImageUpload } from "@/hooks/useImageUpload";
@@ -27,27 +26,7 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [selectedArtworkIds, setSelectedArtworkIds] = useState<string[]>([]);
-  const [availableArtworks, setAvailableArtworks] = useState<any[]>([]);
 
-  // 1. Load artworks so we can pick them
-  useEffect(() => {
-    const loadArtworks = async () => {
-      const { data } = await supabase
-        .from("artworks")
-        .select("id, title, artist_name, artwork_images(url)")
-        .order("created_at", { ascending: false });
-      if (data) setAvailableArtworks(data);
-    };
-    loadArtworks();
-  }, []);
-
-  // const toggleArtwork = (id: string) => {
-  //   setSelectedArtworkIds((prev) =>
-  //     prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
-  //   );
-  // };
-
-  // Reuse your established hook pattern
   const {
     selectedFiles,
     previews,
@@ -116,7 +95,7 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
           label="URL path/'slug'"
           placeholder="e.g. spring-collection-2026"
           required
-          helperText={`This defines the URL: ${process.env.QRCODE_URL}/slug/artwork-slug`}
+          helperText={`URL looks like: ${process.env.NEXT_PUBLIC_QRCODE_URL}/exhibition-name/artwork-name`}
           inputProps={{
             // Browser-level validation for lowercase, numbers, and hyphens
             pattern: "[a-z0-9-]+",
@@ -167,13 +146,12 @@ export default function ExhibitionForm({ onSuccess }: ExhibitionFormProps) {
               />
             </Button>
           ) : (
-            <Box sx={{ position: "relative", display: "inline-block" }}>
+            <Box sx={{ position: "relative", height: 250, width: "100%", display: "inline-block" }}>
               <Image
                 src={previews[0]}
                 alt="Preview"
+                fill
                 style={{
-                  width: "100%",
-                  maxHeight: 250,
                   objectFit: "cover",
                   borderRadius: 8,
                 }}

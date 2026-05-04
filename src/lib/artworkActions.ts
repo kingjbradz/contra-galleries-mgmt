@@ -1,6 +1,6 @@
 'use server'
 
-// @ts-ignore
+//@ts-expect-error heicConvert will return a type error
 import heicConvert from 'heic-convert'
 import sharp from 'sharp';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';

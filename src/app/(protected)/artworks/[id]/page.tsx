@@ -23,6 +23,7 @@ export default async function ArtworkPage({
   if (!artwork) {
     return <NotFoundComponent type="artwork" back="/artworks" />
   }
+  const safeTitle: string = artwork.title ?? ''
 
   return (
     <Grid container spacing={3} padding={2}>
@@ -32,7 +33,7 @@ export default async function ArtworkPage({
         </Typography>
       ) : (
         <>
-          <PageHeaderSetter title={artwork.title} />
+          <PageHeaderSetter title={safeTitle} />
           <IndividualPageActionRow
           itemName={artwork?.title}
           deleteType="artwork"
@@ -86,9 +87,9 @@ export default async function ArtworkPage({
                   alt="image"
                   key={image.id}
                   src={image.url}
+                  height={300}
+                  width={300}
                   style={{
-                    height: 300,
-                    width: 300,
                     border: image.is_cover === true ? "3px solid green" : "",
                   }}
                 ></Image>

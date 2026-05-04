@@ -54,6 +54,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ exhibitions: flattened });
   } catch (err) {
-    return NextResponse.json({ error: "Server Error" }, { status: 500 });
+    const error = err instanceof Error ? err : new Error("Failed to update exhibition.")
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }

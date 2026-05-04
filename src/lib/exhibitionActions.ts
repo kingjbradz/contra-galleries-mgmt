@@ -1,12 +1,17 @@
 'use server'
 
-//@ts-ignore
+//@ts-expect-error heicConvert will return a type error
 import heicConvert from 'heic-convert'
 import sharp from 'sharp';
 import { r2 } from './r2Client';
 import { supabaseAdmin } from './supabaseAdmin';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { revalidatePath } from 'next/cache';
+import { Artwork } from '@/app/(protected)/artworks/page';
+
+type ExhibitionArtworkItem = {
+  artworks: Artwork | null;
+};
 
 export async function getExhibitions() {
   const { data, error } = await supabaseAdmin
@@ -61,12 +66,13 @@ export async function getExhibitionArtworks(id: string) {
     return [];
   }
   
+  const typedData = data as unknown as ExhibitionArtworkItem[]
   // Flatten to include 'cover_url' and remove the raw 'artwork_images' array
-  return data.map((item: any) => {
+  return typedData.map((item) => {
     const artwork = item.artworks;
     return {
       ...artwork,
-      cover_url: artwork.artwork_images?.[0]?.url || null,
+      cover_url: artwork?.artwork_images?.[0]?.url || null,
       artwork_images: undefined 
     };
   });
@@ -153,9 +159,10 @@ if (artworkIds.length > 0) {
 
     revalidatePath('/exhibitions');
     return { success: true, data: exhibition };
-  } catch (err: any) {
+  } catch (err) {
     console.error("Exhibition Create Error:", err);
-    return { error: err.message || "An unknown error occurred during upload." };
+    const error = err instanceof Error ? err : new Error("Failed to create exhibition.")
+    return { error: error.message || "An unknown error occurred during upload." };
   }
 }
 
@@ -235,9 +242,10 @@ export async function updateExhibitionAction(formData: FormData, exhibitionId: s
     }
 
     return { success: true };
-  } catch (err: any) {
+  } catch (err) {
     console.error("Exhibition Update Error:", err);
-    return { error: err.message };
+    const error = err instanceof Error ? err : new Error("Failed to update exhibition.")
+    return { error: error.message };
   }
 }
 
@@ -286,8 +294,9 @@ export async function deleteExhibitionAction(exhibitionId: string) {
     }
 
     return { success: true };
-  } catch (err: any) {
+  } catch (err) {
     console.error("Exhibition Delete Error:", err);
-    return { error: err.message || "Failed to delete exhibition." };
+    const error = err instanceof Error ? err : new Error("Failed to delete exhibition.")
+    return { error: error.message || "Failed to delete exhibition." };
   }
 }
