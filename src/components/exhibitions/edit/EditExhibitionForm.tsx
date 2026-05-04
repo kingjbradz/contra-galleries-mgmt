@@ -36,7 +36,7 @@ export default function EditExhibitionForm({
 
   // Initialize selected IDs from the exhibition's joined artworks
   const [selectedArtworkIds, setSelectedArtworkIds] = useState<string[]>(
-    artworks.map((a) => a.id)
+    artworks.map((a) => a.id).filter((id): id is string => id !== undefined)
   );
 
   const {

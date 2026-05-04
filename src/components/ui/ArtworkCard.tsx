@@ -19,7 +19,7 @@ interface ArtworkCardProps {
 
 export default function ArtworkCard({ artwork, includeArtistName }: ArtworkCardProps) {
   return (
-    <Card key={artwork.id} sx={{ width: 250 }}>
+    <Card key={artwork.id} sx={{ width: 250, margin: 1 }}>
       <CardActionArea component={NextLink} href={`/artworks/${artwork.id}`}>
         <CardMedia
           component="img"

@@ -107,7 +107,7 @@ export default async function ExhibitionPage({
           </Grid>
           <Grid
             size={{ xs: 12 }}
-            sx={{ display: "flex", justifyContent: "space-evenly" }}
+            sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-evenly"  }}
           >
           {artworks.map((artwork) => 
               <ArtworkCard key={artwork.id} artwork={artwork} includeArtistName />
