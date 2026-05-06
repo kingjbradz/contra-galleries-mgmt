@@ -5,69 +5,69 @@ export async function GET(request: Request) {
   const environment = request.headers.get("x-environment");
   const apiKey = request.headers.get("x-api-key");
 
-  console.log("Headers received:", {
-    environment,
-    apiKey: apiKey ? "present" : "missing"
-  });
+  // TEMPORARY DEBUG LOG + RESPONSE 
+  // console.log("Headers received:", {
+  //   environment,
+  //   apiKey: apiKey ? "present" : "missing"
+  // });
 
-  // temporary debug response
-  return NextResponse.json({ 
-    debug: {
-      environment,
-      apiKeyPresent: !!apiKey
-    }
-  });
+  // return NextResponse.json({ 
+  //   debug: {
+  //     environment,
+  //     apiKeyPresent: !!apiKey
+  //   }
+  // });
 
-  // if (!environment) {
-  //   return NextResponse.json({ error: "No environment" }, { status: 400 });
-  // }
+  if (!environment) {
+    return NextResponse.json({ error: "No environment" }, { status: 400 });
+  }
 
-  // if (environment !== "public" && apiKey !== process.env.INTERNAL_VIEWER_KEY) {
-  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  // }
+  if (environment !== "public" && apiKey !== process.env.INTERNAL_VIEWER_KEY) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  // try {
-  //   const { data, error } = await supabaseAdmin
-  //     .from("exhibitions")
-  //     .select(`
-  //       id,
-  //       name,
-  //       slug,
-  //       description,
-  //       cover_image,
-  //       exhibition_artworks (
-  //         artwork_id,
-  //         artworks (
-  //           id,
-  //           title,
-  //           slug,
-  //           info,
-  //           year,
-  //           signed,
-  //           material,
-  //           dimensions,
-  //           artist_name,
-  //           artwork_images (
-  //             id,
-  //             url,
-  //             is_cover
-  //           )
-  //         )
-  //       )
-  //     `) // join exhibition artworks and then artwork images
-  //     .eq(environment, true);
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("exhibitions")
+      .select(`
+        id,
+        name,
+        slug,
+        description,
+        cover_image,
+        exhibition_artworks (
+          artwork_id,
+          artworks (
+            id,
+            title,
+            slug,
+            info,
+            year,
+            signed,
+            material,
+            dimensions,
+            artist_name,
+            artwork_images (
+              id,
+              url,
+              is_cover
+            )
+          )
+        )
+      `) // join exhibition artworks and then artwork images
+      .eq(environment, true);
 
-  //   if (error) throw error;
+    if (error) throw error;
 
-  //   const flattened = data.map(exhibition => ({
-  //     ...exhibition,
-  //     artworks: exhibition.exhibition_artworks.map(ea => ea.artworks),
-  //     exhibition_artworks: undefined
-  //   }));
+    const flattened = data.map(exhibition => ({
+      ...exhibition,
+      artworks: exhibition.exhibition_artworks.map(ea => ea.artworks),
+      exhibition_artworks: undefined
+    }));
 
-  //   return NextResponse.json({ exhibitions: flattened });
-  // } catch (err) {
-  //   const error = err instanceof Error ? err : new Error("Failed to update exhibition.")
-  //   return NextResponse.json({ error: error }, { status: 500 });
-  // }
+    return NextResponse.json({ exhibitions: flattened });
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error("Failed to update exhibition.")
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
 }
