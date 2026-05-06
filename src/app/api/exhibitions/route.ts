@@ -5,6 +5,11 @@ export async function GET(request: Request) {
   const environment = request.headers.get("x-environment");
   const apiKey = request.headers.get("x-api-key");
 
+  console.log("Headers received:", {
+    environment,
+    apiKey: apiKey ? "present" : "missing"
+  });
+
   if (!environment) {
     return NextResponse.json({ error: "No environment" }, { status: 400 });
   }
