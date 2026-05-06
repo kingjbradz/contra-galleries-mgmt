@@ -10,56 +10,64 @@ export async function GET(request: Request) {
     apiKey: apiKey ? "present" : "missing"
   });
 
-  if (!environment) {
-    return NextResponse.json({ error: "No environment" }, { status: 400 });
-  }
+  // temporary debug response
+  return NextResponse.json({ 
+    debug: {
+      environment,
+      apiKeyPresent: !!apiKey
+    }
+  });
 
-  if (environment !== "public" && apiKey !== process.env.INTERNAL_VIEWER_KEY) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // if (!environment) {
+  //   return NextResponse.json({ error: "No environment" }, { status: 400 });
+  // }
 
-  try {
-    const { data, error } = await supabaseAdmin
-      .from("exhibitions")
-      .select(`
-        id,
-        name,
-        slug,
-        description,
-        cover_image,
-        exhibition_artworks (
-          artwork_id,
-          artworks (
-            id,
-            title,
-            slug,
-            info,
-            year,
-            signed,
-            material,
-            dimensions,
-            artist_name,
-            artwork_images (
-              id,
-              url,
-              is_cover
-            )
-          )
-        )
-      `) // join exhibition artworks and then artwork images
-      .eq(environment, true);
+  // if (environment !== "public" && apiKey !== process.env.INTERNAL_VIEWER_KEY) {
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // }
 
-    if (error) throw error;
+  // try {
+  //   const { data, error } = await supabaseAdmin
+  //     .from("exhibitions")
+  //     .select(`
+  //       id,
+  //       name,
+  //       slug,
+  //       description,
+  //       cover_image,
+  //       exhibition_artworks (
+  //         artwork_id,
+  //         artworks (
+  //           id,
+  //           title,
+  //           slug,
+  //           info,
+  //           year,
+  //           signed,
+  //           material,
+  //           dimensions,
+  //           artist_name,
+  //           artwork_images (
+  //             id,
+  //             url,
+  //             is_cover
+  //           )
+  //         )
+  //       )
+  //     `) // join exhibition artworks and then artwork images
+  //     .eq(environment, true);
 
-    const flattened = data.map(exhibition => ({
-      ...exhibition,
-      artworks: exhibition.exhibition_artworks.map(ea => ea.artworks),
-      exhibition_artworks: undefined
-    }));
+  //   if (error) throw error;
 
-    return NextResponse.json({ exhibitions: flattened });
-  } catch (err) {
-    const error = err instanceof Error ? err : new Error("Failed to update exhibition.")
-    return NextResponse.json({ error: error }, { status: 500 });
-  }
+  //   const flattened = data.map(exhibition => ({
+  //     ...exhibition,
+  //     artworks: exhibition.exhibition_artworks.map(ea => ea.artworks),
+  //     exhibition_artworks: undefined
+  //   }));
+
+  //   return NextResponse.json({ exhibitions: flattened });
+  // } catch (err) {
+  //   const error = err instanceof Error ? err : new Error("Failed to update exhibition.")
+  //   return NextResponse.json({ error: error }, { status: 500 });
+  // }
 }
