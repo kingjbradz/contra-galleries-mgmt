@@ -5,19 +5,6 @@ export async function GET(request: Request) {
   const environment = request.headers.get("x-environment");
   const apiKey = request.headers.get("x-api-key");
 
-  // TEMPORARY DEBUG LOG + RESPONSE 
-  // console.log("Headers received:", {
-  //   environment,
-  //   apiKey: apiKey ? "present" : "missing"
-  // });
-
-  // return NextResponse.json({ 
-  //   debug: {
-  //     environment,
-  //     apiKeyPresent: !!apiKey
-  //   }
-  // });
-
   if (!environment) {
     return NextResponse.json({ error: "No environment" }, { status: 400 });
   }

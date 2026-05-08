@@ -29,7 +29,6 @@ export default async function ExhibitionPage({
     return <NotFoundComponent type="exhibition" back="/exhibitions" />;
   }
 
-  console.log("artworks:",artworks)
   return (
     <Grid container spacing={3} padding={2}>
       {exhibition.error ? (

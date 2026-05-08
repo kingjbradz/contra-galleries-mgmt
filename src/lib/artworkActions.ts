@@ -120,7 +120,6 @@ export async function createArtworkAction(formData: FormData) {
 
       // Convert HEIC if necessary
       if (file.name.toLowerCase().endsWith('.heic')) {
-        console.log(`Converting HEIC: ${file.name}`);
         const converted = await heicConvert({
           buffer: buffer,
           format: 'JPEG',
@@ -150,8 +149,6 @@ export async function createArtworkAction(formData: FormData) {
         url: `${process.env.R2_PUBLIC_URL}/${key}`,
         is_cover: i === 0
       });
-      
-      console.log(`Finished image ${i + 1} of ${imageFiles.length}`);
     }
 
     // 3. Link all images at once
