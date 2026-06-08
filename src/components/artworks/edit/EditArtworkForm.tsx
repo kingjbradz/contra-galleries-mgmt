@@ -10,6 +10,8 @@ import {
   TextField,
   Button,
   Stack,
+  InputLabel,
+  FormControl
 } from "@mui/material";
 import { Artwork } from "@/app/(protected)/artworks/page";
 import { useImageUpload } from "@/hooks/useImageUpload";
@@ -40,6 +42,7 @@ export default function EditArtworkForm({
 
 
   const [artists, setArtists] = useState<{ id: string; name: string }[]>([]);
+  const [selectedArtistName, setSelectedArtistName] = useState(artwork.artist_name);
   const [editedArtwork, setEditedArtwork] = useState<Artwork>({
     id: artwork.id,
     artist_id: artwork.artist_id,
@@ -115,15 +118,20 @@ export default function EditArtworkForm({
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={2}>
+        <FormControl>
+        <InputLabel id="artist-select-label">Artist</InputLabel>
         <Select
           value={editedArtwork.artist_id || ""}
           label="Artist"
           name="artist_id"
-          onChange={(e) =>
+          onChange={(e) => {
             setEditedArtwork({
-              ...artwork,
+              ...editedArtwork,
               artist_id: e.target.value,
             })
+            const artist = artists.find(a => a.id === e.target.value);
+            setSelectedArtistName(artist?.name || "");
+          }
           }
         >
           {artists.map((artist) => (
@@ -132,6 +140,8 @@ export default function EditArtworkForm({
             </MenuItem>
           ))}
         </Select>
+        </FormControl>
+        <input type="hidden" name="artist_name" value={selectedArtistName} /> 
         <TextField
           label="Title"
           name="title"
@@ -139,7 +149,7 @@ export default function EditArtworkForm({
           required
           onChange={(e) =>
             setEditedArtwork({
-              ...artwork,
+              ...editedArtwork,
               title: e.target.value,
             })
           }
@@ -151,7 +161,7 @@ export default function EditArtworkForm({
           required
           onChange={(e) =>
             setEditedArtwork({
-              ...artwork,
+              ...editedArtwork,
               year: e.target.value,
             })
           }
@@ -163,7 +173,7 @@ export default function EditArtworkForm({
           required
           onChange={(e) =>
             setEditedArtwork({
-              ...artwork,
+              ...editedArtwork,
               material: e.target.value,
             })
           }
@@ -175,7 +185,7 @@ export default function EditArtworkForm({
           required
           onChange={(e) =>
             setEditedArtwork({
-              ...artwork,
+              ...editedArtwork,
               dimensions: e.target.value,
             })
           }
@@ -193,7 +203,7 @@ export default function EditArtworkForm({
           }}
           onChange={(e) =>
             setEditedArtwork({
-              ...artwork,
+              ...editedArtwork,
               dimensions: e.target.value,
             })
           }
@@ -206,7 +216,7 @@ export default function EditArtworkForm({
           rows={3}
           onChange={(e) =>
             setEditedArtwork({
-              ...artwork,
+              ...editedArtwork,
               info: e.target.value,
             })
           }
@@ -218,7 +228,7 @@ export default function EditArtworkForm({
           required
           onChange={(e) =>
             setEditedArtwork({
-              ...artwork,
+              ...editedArtwork,
               price: e.target.value,
             })
           }
@@ -226,11 +236,11 @@ export default function EditArtworkForm({
         <FormControlLabel
           control={
             <Checkbox
-              value={editedArtwork.signed || false}
-              name="signed"
+              checked={editedArtwork.signed || false}
+              // name="signed"
               onChange={(e) =>
                 setEditedArtwork({
-                  ...artwork,
+                  ...editedArtwork,
                   signed: e.target.checked,
                 })
               }
@@ -238,6 +248,7 @@ export default function EditArtworkForm({
           }
           label="Signed?"
         />
+        <input type="hidden" name="signed" value={editedArtwork.signed ? "true" : "false"} />
         {/* IMAGE UPLOAD SECTION */}
         <Button
           variant="outlined"
