@@ -4,12 +4,29 @@ import { supabase } from '@/lib/supabaseClient'
 
 export function usePaginatedQuery<T>(
   table: string,
-  { orderBy = 'created_at', ascending = false, pageSize = 10 } = {}
+  {
+    orderBy = 'created_at',
+    ascending = false,
+    pageSize = 10,
+    search = '',
+    searchFields = [],
+  }: {
+    orderBy?: string
+    ascending?: boolean
+    pageSize?: number
+    search?: string
+    searchFields?: string[]
+  } = {}
 ) {
   const [data, setData]       = useState<T[]>([])
   const [count, setCount]     = useState(0)
   const [page, setPage]       = useState(1)
   const [loading, setLoading] = useState(true)
+
+  // Reset to page 1 whenever the search term changes
+  useEffect(() => {
+    setPage(1)
+  }, [search])
 
   useEffect(() => {
     async function fetchPage() {
@@ -17,11 +34,20 @@ export function usePaginatedQuery<T>(
       const from = (page - 1) * pageSize
       const to   = from + pageSize - 1
 
-      const { data, count, error } = await supabase
+      let query = supabase
         .from(table)
         .select('*', { count: 'exact' })
         .range(from, to)
         .order(orderBy, { ascending })
+
+      if (search && searchFields.length) {
+        const orFilter = searchFields
+          .map((field) => `${field}.ilike.%${search}%`)
+          .join(',')
+        query = query.or(orFilter)
+      }
+
+      const { data, count, error } = await query
 
       if (!error) {
         setData(data ?? [])
@@ -30,7 +56,7 @@ export function usePaginatedQuery<T>(
       setLoading(false)
     }
     fetchPage()
-  }, [table, page])
+  }, [table, page, search, JSON.stringify(searchFields)])
 
   const pageCount = Math.ceil(count / pageSize)
 

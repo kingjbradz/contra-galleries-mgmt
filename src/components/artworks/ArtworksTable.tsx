@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { usePaginatedQuery } from "@/hooks/usePaginatedQuery";
 import {
   Table,
@@ -9,24 +10,37 @@ import {
   TableBody,
   Pagination,
   Paper,
+  Box,
 } from "@mui/material";
 import { Artwork } from "@/app/(protected)/artworks/page";
 import ActionButtons from "../ui/ActionButtons";
 import { deleteArtworkAction } from "@/lib/artworkActions";
+import SearchBar from "@/lib/SearchBar";
 
 export default function ArtworksTable() {
+  const [search, setSearch] = useState("");
+
   const {
     data: artworks,
     page,
     setPage,
     pageCount,
+    loading,
   } = usePaginatedQuery<Artwork>("artworks", {
     orderBy: "created_at",
     ascending: true,
+    search,
+    searchFields: ["title", "artist_name"],
   });
 
   return (
     <>
+      <SearchBar
+        onSearch={setSearch}
+        placeholder="Search by title or artist"
+        loading={loading}
+      />
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -67,7 +81,6 @@ export default function ArtworksTable() {
                     deleteType="artwork"
                     deleteAction={deleteArtworkAction.bind(null, artwork.id!)}
                     viewPath={`/artworks/${artwork.id}`}
-                    // no editForm as users should do so on an individual page as there's too many fields, images etc
                   />
                 </TableCell>
               </TableRow>

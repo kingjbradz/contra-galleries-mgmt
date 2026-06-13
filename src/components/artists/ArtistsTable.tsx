@@ -1,17 +1,45 @@
-'use client'
-import { usePaginatedQuery } from '@/hooks/usePaginatedQuery'
-import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Pagination, Paper } from '@mui/material'
-import { Artist } from '@/app/(protected)/artists/page'
-import ActionButtons from '../ui/ActionButtons'
-import { deleteArtistAction } from '@/lib/artistActions'
-import EditArtistForm from './edit/EditArtistForm'
+"use client";
+import { useState } from "react";
+import { usePaginatedQuery } from "@/hooks/usePaginatedQuery";
+import {
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Pagination,
+  Paper,
+} from "@mui/material";
+import { Artist } from "@/app/(protected)/artists/page";
+import ActionButtons from "../ui/ActionButtons";
+import { deleteArtistAction } from "@/lib/artistActions";
+import EditArtistForm from "./edit/EditArtistForm";
+import SearchBar from "@/lib/SearchBar";
 
 export default function ArtistsTable() {
-  const { data: artists, page, setPage, pageCount } = usePaginatedQuery<Artist>('artists', { orderBy: 'name', ascending: true })
+  const [search, setSearch] = useState("");
+  const {
+    data: artists,
+    page,
+    setPage,
+    pageCount,
+    loading,
+  } = usePaginatedQuery<Artist>("artists", {
+    orderBy: "name",
+    ascending: true,
+    search,
+    searchFields: ["name"],
+  });
 
   return (
     <>
- <TableContainer component={Paper}>
+      <SearchBar
+        onSearch={setSearch}
+        placeholder="Search by artist name"
+        loading={loading}
+      />
+      <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -34,13 +62,13 @@ export default function ArtistsTable() {
                   {artist.name}
                 </TableCell>
                 <TableCell align="right">
-                <ActionButtons
-                  itemName={artist.name}
-                  deleteType="artist"
-                  deleteAction={deleteArtistAction.bind(null, artist.id!)}
-                  editForm={<EditArtistForm artist={artist} />}
-                  viewPath={`/artists/${artist.id}`}
-                />
+                  <ActionButtons
+                    itemName={artist.name}
+                    deleteType="artist"
+                    deleteAction={deleteArtistAction.bind(null, artist.id!)}
+                    editForm={<EditArtistForm artist={artist} />}
+                    viewPath={`/artists/${artist.id}`}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -52,8 +80,8 @@ export default function ArtistsTable() {
         page={page}
         onChange={(_, value) => setPage(value)}
         color="primary"
-        sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}
+        sx={{ display: "flex", justifyContent: "center", mt: 3 }}
       />
     </>
-  )
+  );
 }
