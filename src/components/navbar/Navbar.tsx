@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppBar, Toolbar, Typography, Button, IconButton, CircularProgress } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
+import Title from "./Title";
 
 export default function Navbar({ title }: { title: string }) {
   const router = useRouter();
@@ -22,9 +23,7 @@ export default function Navbar({ title }: { title: string }) {
         <IconButton aria-label="home" color="inherit" onClick={() => router.push('/dashboard')}>
           <HomeIcon />
         </IconButton>
-          <Typography variant="h5">
-            {title}
-          </Typography>
+        <Title title={title} />
         <Button color="inherit" onClick={handleLogout} loading={submitting}>
           {submitting ? <CircularProgress sx={{ color: 'white' }} /> : "Logout"}
         </Button>
