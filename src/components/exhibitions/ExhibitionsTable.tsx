@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePaginatedQuery } from "@/hooks/usePaginatedQuery";
 import {
   Table,
@@ -17,6 +18,7 @@ import { deleteExhibitionAction } from "@/lib/exhibitionActions";
 import SearchBar from "@/lib/SearchBar";
 
 export default function ExhibitionsTable() {
+  const router = useRouter()
   const [search, setSearch] = useState("");
   const {
     data: exhibitions,
@@ -52,11 +54,13 @@ export default function ExhibitionsTable() {
           <TableBody>
             {exhibitions.map((exhibition) => (
               <TableRow
+                onClick={() => router.push(`/exhibitions/${exhibition.id}`)}
                 key={exhibition.id}
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
                   "&:hover": {
                     backgroundColor: "rgba(0, 0, 0, 0.1)",
+                    cursor: "pointer"
                   },
                 }}
               >

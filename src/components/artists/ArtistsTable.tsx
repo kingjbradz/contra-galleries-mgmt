@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePaginatedQuery } from "@/hooks/usePaginatedQuery";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableContainer,
@@ -18,6 +19,7 @@ import EditArtistForm from "./edit/EditArtistForm";
 import SearchBar from "@/lib/SearchBar";
 
 export default function ArtistsTable() {
+  const router = useRouter()
   const [search, setSearch] = useState("");
   const {
     data: artists,
@@ -50,11 +52,13 @@ export default function ArtistsTable() {
           <TableBody>
             {artists.map((artist) => (
               <TableRow
+                onClick={() => router.push(`/artists/${artist.id}`)}
                 key={artist.id}
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
                   "&:hover": {
                     backgroundColor: "rgba(0, 0, 0, 0.1)",
+                    cursor: "pointer"
                   },
                 }}
               >

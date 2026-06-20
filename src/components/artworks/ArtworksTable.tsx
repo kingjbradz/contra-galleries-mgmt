@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePaginatedQuery } from "@/hooks/usePaginatedQuery";
 import {
   Table,
@@ -18,8 +19,8 @@ import { deleteArtworkAction } from "@/lib/artworkActions";
 import SearchBar from "@/lib/SearchBar";
 
 export default function ArtworksTable() {
+  const router = useRouter()
   const [search, setSearch] = useState("");
-
   const {
     data: artworks,
     page,
@@ -57,11 +58,13 @@ export default function ArtworksTable() {
           <TableBody>
             {artworks.map((artwork) => (
               <TableRow
+                onClick={() => router.push(`/artworks/${artwork.id}`)}
                 key={artwork.id}
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
                   "&:hover": {
                     backgroundColor: "rgba(0, 0, 0, 0.1)",
+                    cursor: "pointer"
                   },
                 }}
               >
