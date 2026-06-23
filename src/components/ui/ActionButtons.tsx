@@ -4,6 +4,9 @@ import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import ModalButton from "@/components/ui/ModalButton";
 import DeleteConfirmation, { DeleteableType } from "@/components/ui/DeleteConfirmation";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 interface ActionButtonsProps {
   viewPath?: string;
@@ -36,12 +39,12 @@ export default function ActionButtons({
     <>
     {/* VIEW */}
       {viewPath && 
-       <Button onClick={() => router.push(`${viewPath}`)}>
+       <Button onClick={() => router.push(`${viewPath}`)} endIcon={<VisibilityIcon />} sx={{ mr: 1 }} size="small">
        View
      </Button>
       }
       {/* EDIT */}
-      {editForm && <ModalButton label="Edit" title={`Edit ${itemName}`} variant="text" buttonProps={{ color: "secondary" }}>
+      {editForm && <ModalButton label="Edit" title={`Edit ${itemName}`} variant="text" buttonProps={{ color: "secondary", endIcon: <EditIcon />, sx: { mr: 1 }, size: "small" }}>
         {(close) => (
           // We clone the element to pass the close/onSuccess props automatically
           React.cloneElement(editForm as React.ReactElement<Record<string, unknown>>, {
@@ -54,7 +57,7 @@ export default function ActionButtons({
       </ModalButton>}
 
       {/* DELETE */}
-      <ModalButton label="Delete" title={`Delete ${itemName}`} variant="text" buttonProps={{color: "error"}}>
+      <ModalButton label="Delete" title={`Delete ${itemName}`} variant="text" buttonProps={{color: "error", endIcon: <DeleteForeverIcon />, size: "small"}}>
         {(close) => (
           <DeleteConfirmation
             type={deleteType}

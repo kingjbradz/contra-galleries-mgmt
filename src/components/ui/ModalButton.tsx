@@ -7,7 +7,7 @@ interface ModalButtonProps {
   title: string;
   buttonProps?: ButtonProps; // Allows you to customize variant, color, etc.
   children: (closeModal: () => void) => ReactNode; // Render prop pattern
-  variant?: ButtonProps['variant']
+  variant?: ButtonProps['variant'];
 }
 
 export default function ModalButton({

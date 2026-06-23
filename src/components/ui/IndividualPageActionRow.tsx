@@ -24,14 +24,14 @@ export default function IndividualPageActionRow({
   return (
     <Grid
       size={{ xs: 12 }}
-      sx={{ display: "flex", justifyContent: "space-between" }}
+      sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
     >
       <Link href={redirectPath!}>
         <IconButton>
           <ArrowBackIcon />
         </IconButton>
       </Link>
-      <Box>
+      <Box sx={{ display: "flex", alignItems: "center" }}>
         <ActionButtons
           itemName={itemName}
           deleteType={deleteType}
@@ -39,8 +39,8 @@ export default function IndividualPageActionRow({
           redirectPath={redirectPath}
           editForm={editForm}
         />
-      </Box>
       {extraComponent || <Box></Box>}
+      </Box>
     </Grid>
   );
 }

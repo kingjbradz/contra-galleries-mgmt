@@ -5,6 +5,7 @@ import { Box, Grid, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ModalButton from "./ModalButton";
 import { useRouter } from "next/navigation";
+import AddIcon from '@mui/icons-material/Add';
 
 interface ListPageActionRowProps {
   label: string;
@@ -31,7 +32,7 @@ export default function ListPageActionRow({
         </IconButton>
       </Link>
       <Box>
-      <ModalButton label={label} title={title}>
+      <ModalButton label={label} title={title} buttonProps={{ endIcon: <AddIcon /> }}>
       {(close) => (
           // We clone the element to pass the close/onSuccess props automatically
           React.cloneElement(form as React.ReactElement<Record<string, unknown>>, {

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@mui/material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 export function DownloadPDFButton({ type, id, name }: { type: string, id: string, name: string }) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -42,8 +43,12 @@ export function DownloadPDFButton({ type, id, name }: { type: string, id: string
       <Button 
         onClick={handleDownload} 
         disabled={isGenerating}
+        endIcon={<PictureAsPdfIcon />}
+        loading={isGenerating}
+        loadingPosition="end"
+        size="small"
       >
-        {isGenerating ? 'Generating PDF...' : 'Download Labels PDF'}
+        {isGenerating ? 'Generating...' : 'Generate'}
       </Button>
   );
 }
