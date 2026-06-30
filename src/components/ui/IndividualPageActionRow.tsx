@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Box, Grid, IconButton } from "@mui/material";
+import { Box, Button, Grid, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ActionButtons from "@/components/ui/ActionButtons";
 import { DeleteableType } from "./DeleteConfirmation";
@@ -21,15 +21,14 @@ export default function IndividualPageActionRow({
   editForm,
   extraComponent,
 }: IndividualPageActionRowProps) {
+  console.log("redirectPath", redirectPath)
   return (
     <Grid
       size={{ xs: 12 }}
       sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
     >
       <Link href={redirectPath!}>
-        <IconButton>
-          <ArrowBackIcon />
-        </IconButton>
+        <Button startIcon={<ArrowBackIcon />} size="small" sx={{ color: "grey.700" }}>{redirectPath!.length > 8 ? "list" : redirectPath!.slice(1)}</Button>
       </Link>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <ActionButtons

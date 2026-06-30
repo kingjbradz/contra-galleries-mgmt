@@ -76,6 +76,7 @@ export async function updateArtistAction(id: string, artistData: {
     return { error: toErrorMessage(err, "Failed to update artist.") };
   }
 }
+
 export async function deleteArtistAction(artistId: string) {
   try {
     // 1. Find all artworks belonging to this artist

@@ -15,7 +15,6 @@ import {
 import { Artist } from "@/app/(protected)/artists/page";
 import ActionButtons from "../ui/ActionButtons";
 import { deleteArtistAction } from "@/lib/artistActions";
-import EditArtistForm from "./edit/EditArtistForm";
 import SearchBar from "@/lib/SearchBar";
 
 export default function ArtistsTable() {
@@ -70,7 +69,6 @@ export default function ArtistsTable() {
                     itemName={artist.name}
                     deleteType="artist"
                     deleteAction={deleteArtistAction.bind(null, artist.id!)}
-                    editForm={<EditArtistForm artist={artist} />}
                     viewPath={`/artists/${artist.id}`}
                   />
                 </TableCell>

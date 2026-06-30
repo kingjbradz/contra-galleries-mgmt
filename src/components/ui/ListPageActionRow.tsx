@@ -1,7 +1,7 @@
 "use client"
 import React from "react";
 import Link from "next/link";
-import { Box, Grid, IconButton } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ModalButton from "./ModalButton";
 import { useRouter } from "next/navigation";
@@ -27,9 +27,7 @@ export default function ListPageActionRow({
       sx={{ display: "flex", justifyContent: "space-between" }}
     >
       <Link href="/dashboard">
-        <IconButton>
-          <ArrowBackIcon />
-        </IconButton>
+        <Button startIcon={<ArrowBackIcon />} sx={{ color: "grey.700" }}>Dashboard</Button>
       </Link>
       <Box>
       <ModalButton label={label} title={title} buttonProps={{ endIcon: <AddIcon /> }}>
