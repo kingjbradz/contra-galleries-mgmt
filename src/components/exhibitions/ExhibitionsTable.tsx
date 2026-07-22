@@ -16,6 +16,7 @@ import { Exhibition } from "@/app/(protected)/exhibitions/page";
 import ActionButtons from "../ui/ActionButtons";
 import { deleteExhibitionAction } from "@/lib/exhibitionActions";
 import SearchBar from "@/lib/SearchBar";
+import TableScaffold from "../ui/TableScaffold"
 
 export default function ExhibitionsTable() {
   const router = useRouter()
@@ -40,8 +41,7 @@ export default function ExhibitionsTable() {
         placeholder="Search by exhibition name"
         loading={loading}
       />
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableScaffold>
           <TableHead>
             <TableRow>
               <TableCell>Exhibition Name</TableCell>
@@ -91,8 +91,7 @@ export default function ExhibitionsTable() {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
-      </TableContainer>
+        </TableScaffold>
       <Pagination
         count={pageCount}
         page={page}

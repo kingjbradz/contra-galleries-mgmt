@@ -3,16 +3,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePaginatedQuery } from "@/hooks/usePaginatedQuery";
 import {
-  Table,
-  TableContainer,
   TableHead,
   TableRow,
   TableCell,
   TableBody,
   Pagination,
-  Paper,
-  Box,
 } from "@mui/material";
+import TableScaffold from "../ui/TableScaffold";
 import { Artwork } from "@/app/(protected)/artworks/page";
 import ActionButtons from "../ui/ActionButtons";
 import { deleteArtworkAction } from "@/lib/artworkActions";
@@ -42,8 +39,7 @@ export default function ArtworksTable() {
         loading={loading}
       />
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableScaffold>
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
@@ -89,8 +85,7 @@ export default function ArtworksTable() {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
-      </TableContainer>
+        </TableScaffold>
       <Pagination
         count={pageCount}
         page={page}
