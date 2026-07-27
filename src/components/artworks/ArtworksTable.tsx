@@ -14,6 +14,7 @@ import { Artwork } from "@/app/(protected)/artworks/page";
 import ActionButtons from "../ui/ActionButtons";
 import { deleteArtworkAction } from "@/lib/artworkActions";
 import SearchBar from "@/lib/SearchBar";
+import { nonMobileRenderStyles, nonTabletRenderStyles } from "../ui/TableScaffold";
 
 export default function ArtworksTable() {
   const router = useRouter()
@@ -44,10 +45,10 @@ export default function ArtworksTable() {
             <TableRow>
               <TableCell>Title</TableCell>
               <TableCell align="center">Artist</TableCell>
-              <TableCell align="center">Year</TableCell>
-              <TableCell align="center">Price</TableCell>
-              <TableCell align="center">Material</TableCell>
-              <TableCell align="center">Signed?</TableCell>
+              <TableCell align="center" sx={nonMobileRenderStyles}>Year</TableCell>
+              <TableCell align="center" sx={nonMobileRenderStyles}>Price</TableCell>
+              <TableCell align="center" sx={nonTabletRenderStyles}>Material</TableCell>
+              <TableCell align="center" sx={nonTabletRenderStyles}>Signed?</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
@@ -68,10 +69,10 @@ export default function ArtworksTable() {
                   {artwork.title}
                 </TableCell>
                 <TableCell align="center">{artwork.artist_name}</TableCell>
-                <TableCell align="center">{artwork.year}</TableCell>
-                <TableCell align="center">{artwork.price}</TableCell>
-                <TableCell align="center">{artwork.material}</TableCell>
-                <TableCell align="center">
+                <TableCell align="center" sx={nonMobileRenderStyles}>{artwork.year}</TableCell>
+                <TableCell align="center" sx={nonMobileRenderStyles}>{artwork.price}</TableCell>
+                <TableCell align="center" sx={nonTabletRenderStyles}>{artwork.material}</TableCell>
+                <TableCell align="center" sx={nonTabletRenderStyles}>
                   {artwork.signed ? "Yes" : "No"}
                 </TableCell>
                 <TableCell align="right">

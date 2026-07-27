@@ -3,20 +3,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePaginatedQuery } from "@/hooks/usePaginatedQuery";
 import {
-  Table,
-  TableContainer,
   TableHead,
   TableRow,
   TableCell,
   TableBody,
   Pagination,
-  Paper,
 } from "@mui/material";
 import { Exhibition } from "@/app/(protected)/exhibitions/page";
 import ActionButtons from "../ui/ActionButtons";
 import { deleteExhibitionAction } from "@/lib/exhibitionActions";
 import SearchBar from "@/lib/SearchBar";
 import TableScaffold from "../ui/TableScaffold"
+import { nonTabletRenderStyles } from "../ui/TableScaffold";
 
 export default function ExhibitionsTable() {
   const router = useRouter()
@@ -45,9 +43,9 @@ export default function ExhibitionsTable() {
           <TableHead>
             <TableRow>
               <TableCell>Exhibition Name</TableCell>
-              <TableCell align="center">Public</TableCell>
-              <TableCell align="center">Private</TableCell>
-              <TableCell align="center">Onsite</TableCell>
+              <TableCell align="center" sx={nonTabletRenderStyles}>Public</TableCell>
+              <TableCell align="center" sx={nonTabletRenderStyles}>Private</TableCell>
+              <TableCell align="center" sx={nonTabletRenderStyles}>Onsite</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
@@ -67,13 +65,13 @@ export default function ExhibitionsTable() {
                 <TableCell component="th" scope="row">
                   {exhibition.name}
                 </TableCell>
-                <TableCell align="center">
+                <TableCell align="center" sx={nonTabletRenderStyles}>
                   {exhibition.public ? "Yes" : "No"}
                 </TableCell>
-                <TableCell align="center">
+                <TableCell align="center" sx={nonTabletRenderStyles}>
                   {exhibition.private ? "Yes" : "No"}
                 </TableCell>
-                <TableCell align="center">
+                <TableCell align="center" sx={nonTabletRenderStyles}>
                   {exhibition.onsite ? "Yes" : "No"}
                 </TableCell>
                 <TableCell align="right">
